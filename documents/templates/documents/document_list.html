@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TrustVault | My Documents</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #222;
+        }
+
+        header {
+            background-color: #172554;
+            color: white;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        header p {
+            margin: 6px 0 0;
+            color: #dbeafe;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .toolbar h2 {
+            margin: 0;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 3px;
+        }
+
+        .primary {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .secondary {
+            background-color: #e5e7eb;
+            color: #111827;
+        }
+
+        .danger {
+            background-color: #dc2626;
+            color: white;
+        }
+
+        .success {
+            background-color: #15803d;
+            color: white;
+        }
+
+        .button:hover {
+            opacity: 0.88;
+        }
+
+        .search-box {
+            background-color: white;
+            padding: 18px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-box form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        input,
+        select {
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .search-box input,
+        .search-box select {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .document-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 18px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .document-card h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            overflow-wrap: anywhere;
+        }
+
+        .document-info {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .actions {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .actions form {
+            display: inline-flex;
+            margin: 3px;
+        }
+
+        .actions form button {
+            margin: 0;
+        }
+
+        details {
+            margin-top: 18px;
+            padding-top: 15px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        summary {
+            cursor: pointer;
+            font-weight: bold;
+            color: #1d4ed8;
+        }
+
+        .permission-item {
+            margin-top: 12px;
+            padding: 12px;
+            background-color: #f8fafc;
+            border-radius: 6px;
+            overflow-wrap: anywhere;
+        }
+
+        .permission-item form {
+            display: inline-block;
+            margin-top: 8px;
+        }
+
+        .empty-state {
+            background-color: white;
+            padding: 35px;
+            text-align: center;
+            border-radius: 8px;
+            color: #64748b;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 18px;
+            }
+
+            .container {
+                padding: 0 12px;
+            }
+
+            .toolbar {
+                align-items: flex-start;
+            }
+
+            .search-box input,
+            .search-box select {
+                width: 100%;
+                min-width: 0;
+            }
+
+            .document-card {
+                padding: 15px;
+            }
+        }
+    </style>
+    {% load static %}<link rel="stylesheet" href="{% static 'css/trustvault.css' %}">
+</head>
+
+<body class="tv-content-page">
+
+<header>
+    <div>
+        <h1>TrustVault</h1>
+        <p>Secure Document Sharing</p>
+    </div>
+
+    <div>
+        <span>Welcome, {{ user.username }}</span>
+
+        <a class="button secondary" href="{% url 'logout' %}">
+            Log out
+        </a>
+    </div>
+</header>
+
+<main class="container">
+
+    <!-- Page toolbar -->
+    <div class="toolbar">
+        <h2>My Documents</h2>
+
+        <a class="button primary" href="{% url 'document_upload' %}">
+            + Upload Document
+        </a>
+    </div>
+
+    <!-- Document search and filters -->
+    <section class="search-box">
+        <form method="get" action="{% url 'document_list' %}">
+
+            <!-- Search by title or description -->
+            <input
+                type="search"
+                name="q"
+                placeholder="Search title or description..."
+                value="{{ search_query }}"
+                aria-label="Search documents"
+            >
+
+            <!-- Filter by owner -->
+            <input
+                type="text"
+                name="owner"
+                placeholder="Owner username"
+                value="{{ owner_query }}"
+                aria-label="Filter by owner username"
+            >
+
+            <!-- Filter by category -->
+            <select name="category" aria-label="Filter by category">
+                <option value="">All Categories</option>
+
+                {% for value, label in category_choices %}
+                    <option
+                        value="{{ value }}"
+                        {% if category_query == value %}selected{% endif %}
+                    >
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <!-- Starting upload date -->
+            <input
+                type="date"
+                name="date_from"
+                value="{{ date_from }}"
+                aria-label="Uploaded from date"
+                title="Uploaded from date"
+            >
+
+            <!-- Ending upload date -->
+            <input
+                type="date"
+                name="date_to"
+                value="{{ date_to }}"
+                aria-label="Uploaded to date"
+                title="Uploaded to date"
+            >
+
+            <button class="button primary" type="submit">
+                Search &amp; Filter
+            </button>
+
+            <a class="button secondary" href="{% url 'document_list' %}">
+                Clear Filters
+            </a>
+
+        </form>
+    </section>
+
+    <!-- Documents owned by the current user -->
+    <section>
+        <h2>Documents I Own</h2>
+
+        {% if documents %}
+
+            {% for document in documents %}
+
+                <article class="document-card">
+
+                    <h3>{{ document.title }}</h3>
+
+                    <div class="document-info">
+                        <div>
+                            <strong>Owner:</strong>
+                            {{ document.owner.username }}
+                        </div>
+
+                        <div>
+                            <strong>Category:</strong>
+                            {{ document.get_category_display }}
+                        </div>
+
+                        <div>
+                            <strong>Uploaded:</strong>
+                            {{ document.created_at|date:"d M Y, H:i" }}
+                        </div>
+
+                        {% if document.description %}
+                            <div>
+                                <strong>Description:</strong>
+                                {{ document.description }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Document actions -->
+                    <div class="actions">
+
+                        <!-- Download -->
+                        <a
+                            class="button success"
+                            href="{% url 'document_download' document.id %}"
+                        >
+                            Download
+                        </a>
+
+                        <!-- Edit -->
+                        <a
+                            class="button primary"
+                            href="{% url 'document_edit' document.id %}"
+                        >
+                            Edit
+                        </a>
+
+                        <!-- Share -->
+                        <a
+                            class="button primary"
+                            href="{% url 'document_share' document.id %}"
+                        >
+                            Share
+                        </a>
+
+                        <!-- Delete using POST and CSRF protection -->
+                        <form
+                            method="post"
+                            action="{% url 'document_delete' document.id %}"
+                            onsubmit="return confirm('Are you sure you want to delete this document?');"
+                        >
+                            {% csrf_token %}
+
+                            <button class="button danger" type="submit">
+                                Delete
+                            </button>
+                        </form>
+
+                    </div>
+
+                    <!-- Access management for document owners -->
+                    <details>
+                        <summary>Manage access</summary>
+
+                        <div>
+                            {% for permission in document.permissions.all %}
+
+                                <div class="permission-item">
+
+                                    <strong>
+                                        {{ permission.user.username }}
+                                    </strong>
+
+                                    <div class="document-info">
+                                        Read and download:
+
+                                        {% if permission.can_read %}
+                                            Yes
+                                        {% else %}
+                                            No
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="document-info">
+                                        Edit permission:
+
+                                        {% if permission.can_edit %}
+                                            Yes
+                                        {% else %}
+                                            No
+                                        {% endif %}
+                                    </div>
+
+                                    <form
+                                        method="post"
+                                        action="{% url 'document_revoke' document.id permission.user.id %}"
+                                    >
+                                        {% csrf_token %}
+
+                                        <button
+                                            class="button danger"
+                                            type="submit"
+                                        >
+                                            Revoke Access
+                                        </button>
+                                    </form>
+
+                                </div>
+
+                            {% empty %}
+
+                                <p>
+                                    This document has not been shared
+                                    with anyone.
+                                </p>
+
+                            {% endfor %}
+                        </div>
+                    </details>
+
+                </article>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="empty-state">
+                <h3>No documents found</h3>
+
+                <p>
+                    No documents match your current search or filters.
+                    Try changing your search criteria or clearing
+                    the filters.
+                </p>
+
+                <a
+                    class="button primary"
+                    href="{% url 'document_upload' %}"
+                >
+                    Upload Your First Document
+                </a>
+            </div>
+
+        {% endif %}
+
+    </section>
+
+    <!-- Documents shared with the current user -->
+    <section>
+        <h2>Documents Shared With Me</h2>
+
+        {% if shared_documents %}
+
+            {% for document in shared_documents %}
+
+                <article class="document-card">
+
+                    <h3>{{ document.title }}</h3>
+
+                    <div class="document-info">
+                        <div>
+                            <strong>Owner:</strong>
+                            {{ document.owner.username }}
+                        </div>
+
+                        <div>
+                            <strong>Category:</strong>
+                            {{ document.get_category_display }}
+                        </div>
+
+                        <div>
+                            <strong>Uploaded:</strong>
+                            {{ document.created_at|date:"d M Y, H:i" }}
+                        </div>
+
+                        {% if document.description %}
+                            <div>
+                                <strong>Description:</strong>
+                                {{ document.description }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="actions">
+                        <a
+                            class="button success"
+                            href="{% url 'document_download' document.id %}"
+                        >
+                            Download
+                        </a>
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="empty-state">
+                <p>No documents have been shared with you yet.</p>
+            </div>
+
+        {% endif %}
+
+    </section>
+
+</main>
+
+<footer>
+    TrustVault &copy; 2026 — Secure Document Sharing
+</footer>
+
+</body>
+</html>

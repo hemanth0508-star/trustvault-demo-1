@@ -1,0 +1,18 @@
+1.created a project folder
+2.installed python and django extensions
+3.in terminal python --version
+4.now we have to create a virtual environment for that 
+        cmd:python -m venv venv
+5.activate the environment
+        cmd: .\venv\Scripts\Activate.ps1
+6.now upgrade pip versions
+        cmd: python -m pip install --upgrade pip
+7.now install django 
+        cmd: python -m pip install django
+8.check its version
+        cmd: python -m django --version
+9.now start the django project 
+        cmd: django-admin startproject config .
+this cmd create basic structure needed for the django website
+10.create intial database
+        cmd: python manage.py migrate

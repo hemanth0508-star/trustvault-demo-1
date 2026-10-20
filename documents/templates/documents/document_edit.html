@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TrustVault | Edit Document</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #222;
+        }
+
+        header {
+            background: #172554;
+            color: white;
+            padding: 20px 5%;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 35px auto;
+            padding: 25px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        label {
+            display: block;
+            margin-top: 16px;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .helptext {
+            display: block;
+            margin-top: 5px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .errorlist {
+            color: #dc2626;
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 11px 16px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .secondary {
+            background: #e5e7eb;
+            color: #111827;
+            margin-left: 8px;
+        }
+    </style>
+    {% load static %}<link rel="stylesheet" href="{% static 'css/trustvault.css' %}">
+</head>
+
+<body class="tv-content-page">
+
+<header>
+    <h1>TrustVault</h1>
+    <p>Edit Document</p>
+</header>
+
+<main class="container">
+
+    <h2>{{ document.title }}</h2>
+
+    <p>Update the document details below.</p>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {{ form.non_field_errors }}
+
+        {% for field in form %}
+            <label for="{{ field.id_for_label }}">
+                {{ field.label }}
+            </label>
+
+            {{ field }}
+
+            {% if field.help_text %}
+                <small class="helptext">
+                    {{ field.help_text }}
+                </small>
+            {% endif %}
+
+            {{ field.errors }}
+        {% endfor %}
+
+        <button class="button primary" type="submit">
+            Save Changes
+        </button>
+
+        <a
+            class="button secondary"
+            href="{% url 'document_list' %}"
+        >
+            Cancel
+        </a>
+    </form>
+
+</main>
+
+</body>
+</html>

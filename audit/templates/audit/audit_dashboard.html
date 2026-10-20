@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TrustVault | Audit Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172033;
+            margin: 0;
+        }
+
+        header {
+            background: #101d35;
+            color: white;
+            padding: 22px 6%;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 22px;
+        }
+
+        input, select, button {
+            padding: 10px;
+            margin: 5px;
+        }
+
+        button {
+            background: #1769e0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            background: white;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 13px;
+            border-bottom: 1px solid #e4e8ef;
+            text-align: left;
+        }
+
+        th {
+            background: #eaf0f9;
+        }
+
+        .success {
+            color: #16803c;
+            font-weight: bold;
+        }
+
+        .denied {
+            color: #c62828;
+            font-weight: bold;
+        }
+
+        .details {
+            font-size: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #64748b;
+        }
+    </style>
+    {% load static %}<link rel="stylesheet" href="{% static 'css/trustvault.css' %}">
+</head>
+
+<body class="tv-content-page">
+
+<header>
+    <h1>TrustVault</h1>
+    <p>Security Audit Dashboard</p>
+</header>
+
+<main>
+
+    <h2>Document Activity</h2>
+
+    <form method="get" class="filters">
+
+        <label for="event_type">Event type:</label>
+
+        <select name="event_type" id="event_type">
+            <option value="">All events</option>
+
+            {% for code, label in event_choices %}
+                <option
+                    value="{{ code }}"
+                    {% if selected_event_type == code %}
+                        selected
+                    {% endif %}
+                >
+                    {{ label }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <label for="username">Username:</label>
+
+        <input
+            type="text"
+            id="username"
+            name="username"
+            value="{{ username_query }}"
+            placeholder="Search username"
+        >
+
+        <button type="submit">Filter</button>
+
+        <a href="{% url 'audit_dashboard' %}">Clear</a>
+
+    </form>
+
+    <div class="table-container">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Event</th>
+                    <th>Actor</th>
+                    <th>Document</th>
+                    <th>Result</th>
+                    <th>IP Address</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for event in events %}
+                    <tr>
+                        <td>{{ event.timestamp|date:"d M Y, H:i:s" }}</td>
+
+                        <td>{{ event.get_event_type_display }}</td>
+
+                        <td>
+                            {% if event.actor %}
+                                {{ event.actor.username }}
+                            {% else %}
+                                Unknown
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if event.document %}
+                                {{ event.document.title }}
+                            {% else %}
+                                Unavailable
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if event.success %}
+                                <span class="success">Success</span>
+                            {% else %}
+                                <span class="denied">Denied</span>
+                            {% endif %}
+                        </td>
+
+                        <td>{{ event.ip_address|default:"Unavailable" }}</td>
+
+                        <td class="details">{{ event.details }}</td>
+                    </tr>
+
+                {% empty %}
+                    <tr>
+                        <td colspan="7">No audit events found.</td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+    </div>
+
+    <p>Showing up to 200 recent events.</p>
+
+</main>
+
+<footer>
+    TrustVault &copy; 2026 — Secure Document Sharing
+</footer>
+
+</body>
+</html>

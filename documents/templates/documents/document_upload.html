@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Document - TrustVault</title>
+    {% load static %}<link rel="stylesheet" href="{% static 'css/trustvault.css' %}">
+</head>
+<body class="tv-content-page">
+    <h1>Upload a Document</h1>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">Upload</button>
+    </form>
+
+    <p>
+        <a href="{% url 'document_list' %}">Back to documents</a>
+    </p>
+</body>
+</html>

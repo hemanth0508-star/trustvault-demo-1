@@ -1,0 +1,21 @@
+# Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+
+# Django
+db.sqlite3
+staticfiles/
+media/
+
+# Private documents and credentials
+private_uploads/
+demo_credentials.csv
+.env
+.env.*
+
+# Editor and operating system
+.vscode/
+.DS_Store
+Thumbs.db\n# Deployment and local secrets\n.env\n.env.*\n!.env.example\n*.sqlite3\nprivate_uploads/\n

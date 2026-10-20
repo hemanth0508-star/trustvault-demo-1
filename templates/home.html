@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TrustVault | Secure Document Sharing</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            color: white;
+            background: #020817;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 6%;
+            background: rgba(3, 12, 32, 0.95);
+            border-bottom: 1px solid #123d72;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: #08bfff;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        nav a {
+            color: #c7d8f1;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        nav a:hover {
+            color: #08c5ff;
+        }
+
+        .nav-button {
+            padding: 11px 18px;
+            border: 1px solid #168cff;
+            border-radius: 8px;
+        }
+
+        .hero {
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 6%;
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: -50%;
+            z-index: -1;
+            background:
+                radial-gradient(
+                    circle at 50% 50%,
+                    rgba(0, 122, 255, 0.28),
+                    transparent 35%
+                ),
+                radial-gradient(
+                    circle at 25% 40%,
+                    rgba(112, 36, 255, 0.20),
+                    transparent 25%
+                );
+            animation: backgroundMove 12s ease-in-out infinite alternate;
+        }
+
+        .network {
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            background-image:
+                radial-gradient(circle, #00bfff 1px, transparent 2px);
+            background-size: 55px 55px;
+            opacity: 0.20;
+            animation: networkMove 18s linear infinite;
+        }
+
+        .panel {
+    width: 100%;
+    max-width: 1050px;
+    min-height: 480px;
+    margin: 0 auto;
+    padding: 55px 45px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    /* Glass box appearance */
+    background: rgba(8, 28, 65, 0.72);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    /* Glowing blue border */
+    border: 1px solid rgba(55, 175, 255, 0.85);
+    border-radius: 22px;
+
+    /* Neon glow around the box */
+    box-shadow:
+        0 0 20px rgba(0, 140, 255, 0.25),
+        0 0 45px rgba(0, 100, 255, 0.18),
+        inset 0 0 25px rgba(0, 140, 255, 0.08);
+
+    position: relative;
+    overflow: hidden;
+
+    animation: panelAppear 1s ease-out both;
+}
+.panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+
+    background: linear-gradient(
+        120deg,
+        transparent,
+        #00cfff,
+        #6b4dff,
+        transparent
+    );
+
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+
+    pointer-events: none;
+    animation: borderGlow 5s linear infinite;
+}
+
+@keyframes borderGlow {
+    0%, 100% {
+        opacity: 0.45;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+        .shield {
+            font-size: 65px;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 18px #008cff);
+            animation: shieldGlow 3s ease-in-out infinite;
+        }
+
+        h1 {
+            font-size: clamp(35px, 5vw, 60px);
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        h1 span {
+            color: #00bfff;
+        }
+
+        .tagline {
+            font-size: 17px;
+            color: #6bdcff;
+            letter-spacing: 3px;
+            margin-bottom: 30px;
+        }
+
+        .description {
+            max-width: 750px;
+            margin: 0 auto 35px;
+            color: #c0cde2;
+            font-size: 17px;
+            line-height: 1.9;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            min-width: 200px;
+            padding: 17px 25px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .signup {
+            background: linear-gradient(100deg, #087dff, #6638ff);
+            box-shadow: 0 0 22px rgba(0, 128, 255, 0.3);
+        }
+
+        .login {
+            background: rgba(35, 65, 105, 0.6);
+            border: 1px solid #3376bd;
+        }
+
+        .button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 0 28px rgba(0, 170, 255, 0.45);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            padding: 30px 6% 60px;
+            margin: auto;
+        }
+
+        .feature {
+            padding: 22px 15px;
+            text-align: center;
+            border: 1px solid rgba(40, 105, 170, 0.45);
+            border-radius: 12px;
+            background: rgba(8, 25, 52, 0.75);
+            transition: 0.3s;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+            border-color: #00bfff;
+        }
+
+        .feature-icon {
+            font-size: 34px;
+            margin-bottom: 15px;
+        }
+
+        .feature h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .feature p {
+            font-size: 13px;
+            color: #9eb2cf;
+            line-height: 1.7;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px 15px;
+            border-top: 1px solid #132b4b;
+            color: #91a5c2;
+            font-size: 13px;
+        }
+
+        footer p {
+            margin-bottom: 8px;
+        }
+
+        @keyframes backgroundMove {
+            from {
+                transform: translate(-3%, -2%) rotate(0deg);
+            }
+            to {
+                transform: translate(3%, 2%) rotate(8deg);
+            }
+        }
+
+        @keyframes networkMove {
+            from {
+                background-position: 0 0;
+            }
+            to {
+                background-position: 110px 55px;
+            }
+        }
+
+        @keyframes shieldGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 10px #008cff);
+            }
+            50% {
+                filter: drop-shadow(0 0 25px #00cfff);
+            }
+        }
+
+        @keyframes panelAppear {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 800px) {
+            header {
+                flex-wrap: wrap;
+                gap: 18px;
+            }
+
+            nav {
+                flex-wrap: wrap;
+                gap: 14px;
+            }
+
+            .panel {
+                padding: 40px 22px;
+            }
+
+            .features {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                justify-content: center;
+            }
+
+            nav {
+                justify-content: center;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .description {
+                font-size: 15px;
+            }
+
+            .tagline {
+                font-size: 12px;
+                letter-spacing: 2px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+    </style>
+    {% load static %}<link rel="stylesheet" href="{% static 'css/trustvault.css' %}">
+</head>
+
+<body class="tv-content-page">
+
+<header>
+    <a href="/" class="logo">◈ Trust<span>Vault</span></a>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="#features">Features</a>
+        <a href="#security">Security</a>
+        <a href="#about">About</a>
+        <a href="#support">Support</a>
+        <a href="{% url 'login' %}" class="nav-button">🔒 Login</a>
+    </nav>
+</header>
+
+<main>
+    <section class="hero">
+        <div class="network"></div>
+
+        <div class="panel" id="about">
+            <div class="shield">🛡️</div>
+
+            <h1>Trust<span>Vault</span></h1>
+
+            <div class="tagline">
+                SECURE DOCUMENT SHARING PLATFORM
+            </div>
+
+            <p class="description">
+                TrustVault helps you securely upload, manage, and share
+                important documents. Control who can view or edit your files,
+                revoke permissions when needed, and track document activity
+                through an audit trail.
+                <br><br>
+                Your documents. Your control. Your security.
+            </p>
+
+            <div class="buttons">
+                <a href="{% url 'register' %}" class="button signup">
+                    👤 Sign Up
+                </a>
+
+                <a href="{% url 'login' %}" class="button login">
+                    🔒 Login
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+
+        <article class="feature">
+            <div class="feature-icon">🔒</div>
+            <h3>Secure Storage</h3>
+            <p>Keep documents in private storage with controlled access.</p>
+        </article>
+
+        <article class="feature" id="security">
+            <div class="feature-icon">👥</div>
+            <h3>Access Control</h3>
+            <p>Grant viewing and editing permissions to authorized users.</p>
+        </article>
+
+        <article class="feature">
+            <div class="feature-icon">📋</div>
+            <h3>Activity Audit Trail</h3>
+            <p>Track document activity and permission changes.</p>
+        </article>
+
+        <article class="feature">
+            <div class="feature-icon">🔍</div>
+            <h3>Document Search</h3>
+            <p>Find documents using titles, owners, categories, and dates.</p>
+        </article>
+
+    </section>
+</main>
+
+<footer id="support">
+    <p>Home &nbsp; Features &nbsp; Security &nbsp; About &nbsp; Support</p>
+    <p>© 2026 TrustVault. Secure document sharing and access management.</p>
+</footer>
+
+</body>
+</html>
