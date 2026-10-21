@@ -89,8 +89,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
-# Production deployments MUST provide DATABASE_URL (for example, Neon PostgreSQL).
-# SQLite is retained only for local development when DEBUG is enabled.
+# All environments must use the configured PostgreSQL database.
 import dj_database_url
 
 DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()
@@ -103,17 +102,9 @@ if DATABASE_URL:
             ssl_require=True,
         )
     }
-elif DEBUG:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
 else:
     raise RuntimeError(
-        "DATABASE_URL is required when DJANGO_DEBUG=0. "
-        "Set it to your Neon PostgreSQL connection string."
+        "DATABASE_URL is required. Set it to your Neon PostgreSQL connection string."
     )
 
 

@@ -12,7 +12,7 @@ This repository includes `render.yaml` for a Render web service. In the Render d
 4. Add `DATABASE_URL` to the Render service's environment variables and paste the Neon connection string. `DJANGO_SECRET_KEY` should be a long random secret, `DJANGO_DEBUG=0`, `DJANGO_ALLOWED_HOSTS` should contain the Render hostname, and `DJANGO_CSRF_TRUSTED_ORIGINS` should contain its HTTPS origin.
 5. Deploy. The build command collects static files and runs database migrations automatically. Create an admin user from the Render Shell with `python manage.py createsuperuser`.
 
-**Important:** production refuses to start without `DATABASE_URL`; SQLite is only a local-development fallback. Existing SQLite users/documents are not automatically copied into Neon. If you need that data, export/import it separately before switching.
+**Important:** `DATABASE_URL` is required in every environment; the application does not fall back to SQLite. Use a separate Neon database or branch for local development rather than sharing production data. Existing SQLite users/documents are not automatically copied into Neon. If you need that data, export/import it separately.
 
 ### Uploaded document storage
 
@@ -27,7 +27,9 @@ See `.env.example` for the required settings. Never commit your real `DATABASE_U
 - pip
 
 ## Run locally (Windows PowerShell)
+Set `DATABASE_URL` in your shell to a Neon PostgreSQL connection string before running these commands. Prefer a separate Neon branch for development.
 ```powershell
+$env:DATABASE_URL = "your Neon PostgreSQL connection string"
 py -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
