@@ -36,12 +36,19 @@
 .tv-upload-page .tv-upload-field input:not([type=file]),.tv-upload-page .tv-upload-field select,.tv-upload-page .tv-upload-field textarea{display:block;width:100%;min-height:45px;padding:11px 13px;border:1px solid #263c5e;border-radius:9px;outline:none;background:#09162c;color:#eef5ff;font:inherit;font-size:13px;transition:border-color .18s,box-shadow .18s}
 .tv-upload-page .tv-upload-field textarea{min-height:93px;resize:vertical}
 .tv-upload-page .tv-upload-field input:focus,.tv-upload-page .tv-upload-field select:focus,.tv-upload-page .tv-upload-field textarea:focus{border-color:#45cde9;box-shadow:0 0 0 3px rgba(64,217,255,.1)}
-.tv-upload-file-control{padding:15px;border:1px dashed #345277;border-radius:10px;background:rgba(5,16,34,.45)}
-.tv-upload-page .tv-upload-file-control input[type=file]{width:100%;color:#bdcce2;font:inherit;font-size:12px}
-.tv-upload-page .tv-upload-file-control input[type=file]::file-selector-button{margin-right:12px;padding:8px 11px;border:1px solid #315078;border-radius:7px;background:#122644;color:#d8eaff;font:inherit;font-size:11px;font-weight:650;cursor:pointer}
-.tv-upload-page .tv-upload-file-control input[type=file]::file-selector-button:hover{border-color:#46cee9;background:#173352}
-.tv-upload-file-control p{display:flex;justify-content:space-between;gap:12px;margin:12px 0 0;color:#7f95b5;font-size:10px}
-.tv-upload-file-control p span{color:#8fa8ca;white-space:nowrap}
+.tv-upload-dropzone{position:relative;display:grid!important;grid-template-columns:42px minmax(0,1fr);align-items:center;gap:12px;padding:17px;border:1px dashed #3b5d84;border-radius:11px;background:rgba(5,16,34,.45);cursor:pointer;transition:border-color .18s,background .18s,box-shadow .18s}
+.tv-upload-dropzone:hover,.tv-upload-dropzone.is-dragging{border-color:#4bd2ee;background:rgba(23,69,101,.2)}
+.tv-upload-dropzone.is-dragging{box-shadow:0 0 0 3px rgba(64,217,255,.1)}
+.tv-upload-dropzone:focus-within{border-color:#45cde9;box-shadow:0 0 0 3px rgba(64,217,255,.12)}
+.tv-upload-dropzone input[type=file]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.tv-upload-drop-icon{display:grid;place-items:center;width:42px;height:42px;border:1px solid rgba(64,217,255,.17);border-radius:12px;background:rgba(38,155,206,.1);color:#5bd7ef}
+.tv-upload-drop-icon svg{width:21px;height:21px}
+.tv-upload-drop-copy{display:grid;gap:6px;min-width:0}
+.tv-upload-drop-copy strong{color:#dce9f9;font-size:12px;font-weight:650}
+.tv-upload-drop-copy strong span{color:#68d9f1}
+.tv-upload-drop-copy small{color:#859bb9;font-size:10px;font-weight:450}
+.tv-upload-file-result{grid-column:2;overflow:hidden;color:#82a0c2;font-size:10px;font-weight:550;text-overflow:ellipsis;white-space:nowrap}
+.tv-upload-dropzone.has-file .tv-upload-file-result{color:#78e0ca}
 .tv-upload-optional{float:right;color:#788ca9!important;font-size:9px;letter-spacing:.7px}
 .tv-upload-help{margin:7px 0 0;color:#91a6c4;font-size:11px}
 .tv-upload-field-error,.tv-upload-error-summary{color:#ffc0d0;font-size:12px}
@@ -71,5 +78,5 @@
 .tv-upload-footer{text-align:center;margin:24px 0 0;color:#6f83a1;font-size:10px;letter-spacing:.2px}
 .tv-upload-footer span{padding:0 5px;color:#405a7b}
 @media(max-width:780px){.tv-upload-main{margin-top:36px}.tv-upload-layout{grid-template-columns:minmax(0,1fr) 250px;gap:14px}.tv-upload-card{padding:25px 22px}.tv-upload-assurance{padding:19px}}
-@media(max-width:640px){.tv-upload-page .tv-upload-header{height:64px;padding:0 20px}.tv-upload-main{width:min(100% - 32px,520px);margin:30px auto 24px}.tv-upload-heading{align-items:flex-start;flex-direction:column;gap:14px}.tv-upload-layout{grid-template-columns:1fr}.tv-upload-aside{grid-template-columns:1fr 1fr}.tv-upload-assurance{padding:18px}.tv-upload-file-note{align-items:flex-start}.tv-upload-file-control p{flex-direction:column;gap:5px}}
+@media(max-width:640px){.tv-upload-page .tv-upload-header{height:64px;padding:0 20px}.tv-upload-main{width:min(100% - 32px,520px);margin:30px auto 24px}.tv-upload-heading{align-items:flex-start;flex-direction:column;gap:14px}.tv-upload-layout{grid-template-columns:1fr}.tv-upload-aside{grid-template-columns:1fr 1fr}.tv-upload-assurance{padding:18px}.tv-upload-file-note{align-items:flex-start}}
 @media(max-width:430px){.tv-upload-aside{grid-template-columns:1fr}.tv-upload-card{padding:22px 17px}.tv-upload-actions{gap:14px}.tv-upload-page .tv-upload-submit{padding:0 12px}.tv-upload-back{font-size:11px!important}}

@@ -54,15 +54,24 @@
                         <label for="{{ form.title.id_for_label }}">Document name <span>*</span></label>
                         {{ form.title }}
                         {% if form.title.errors %}<div class="tv-upload-field-error" role="alert">{{ form.title.errors }}</div>{% endif %}
-                        {% if form.title.help_text %}<p class="tv-upload-help">{{ form.title.help_text }}</p>{% endif %}
+                        {% if form.title.help_text %}<p class="tv-upload-help">{{ form.title.help_text }}</p>{% else %}<p class="tv-upload-help">Give this file a short, recognizable name.</p>{% endif %}
                     </div>
 
                     <div class="tv-upload-field">
-                        <label for="{{ form.file.id_for_label }}">Choose a file <span>*</span></label>
-                        <div class="tv-upload-file-control">
+                        <label id="tv-upload-file-label" for="{{ form.file.id_for_label }}">Choose a file <span>*</span></label>
+                        <label class="tv-upload-dropzone" for="{{ form.file.id_for_label }}" id="tv-upload-dropzone">
+                            <span class="tv-upload-drop-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <path d="M12 15V4m0 0L8 8m4-4 4 4M5 14v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                            <span class="tv-upload-drop-copy">
+                                <strong>Drop your file here or <span>browse files</span></strong>
+                                <small>PDF, TXT, DOCX, PNG, JPG or JPEG · Up to 10 MB</small>
+                            </span>
+                            <span class="tv-upload-file-result" id="tv-upload-file-result" aria-live="polite">No file selected</span>
                             {{ form.file }}
-                            <p>Supported: PDF, TXT, DOCX, PNG, JPG, JPEG <span>Up to 10 MB</span></p>
-                        </div>
+                        </label>
                         {% if form.file.errors %}<div class="tv-upload-field-error" role="alert">{{ form.file.errors }}</div>{% endif %}
                         {% if form.file.help_text %}<p class="tv-upload-help">{{ form.file.help_text }}</p>{% endif %}
                     </div>
@@ -71,7 +80,7 @@
                         <label for="{{ form.category.id_for_label }}">Category <span>*</span></label>
                         {{ form.category }}
                         {% if form.category.errors %}<div class="tv-upload-field-error" role="alert">{{ form.category.errors }}</div>{% endif %}
-                        {% if form.category.help_text %}<p class="tv-upload-help">{{ form.category.help_text }}</p>{% endif %}
+                        {% if form.category.help_text %}<p class="tv-upload-help">{{ form.category.help_text }}</p>{% else %}<p class="tv-upload-help">Choose the category that best fits this document.</p>{% endif %}
                     </div>
 
                     <div class="tv-upload-field">
@@ -119,5 +128,46 @@
         </div>
         <p class="tv-upload-footer">Protected document storage <span aria-hidden="true">·</span> TrustVault</p>
     </main>
+    <script>
+        (() => {
+            const input = document.getElementById("{{ form.file.id_for_label }}");
+            const dropzone = document.getElementById("tv-upload-dropzone");
+            const result = document.getElementById("tv-upload-file-result");
+            if (!input || !dropzone || !result) return;
+
+            const showFile = (file) => {
+                result.textContent = file
+                    ? `${file.name} · ${file.size < 1024 * 1024
+                        ? `${Math.max(1, Math.round(file.size / 1024))} KB`
+                        : `${(file.size / (1024 * 1024)).toFixed(1)} MB`}`
+                    : "No file selected";
+                dropzone.classList.toggle("has-file", Boolean(file));
+            };
+
+            input.addEventListener("change", () => showFile(input.files[0]));
+            ["dragenter", "dragover"].forEach((eventName) => {
+                dropzone.addEventListener(eventName, (event) => {
+                    event.preventDefault();
+                    dropzone.classList.add("is-dragging");
+                });
+            });
+            ["dragleave", "drop"].forEach((eventName) => {
+                dropzone.addEventListener(eventName, (event) => {
+                    event.preventDefault();
+                    dropzone.classList.remove("is-dragging");
+                });
+            });
+            dropzone.addEventListener("drop", (event) => {
+                const [file] = event.dataTransfer.files;
+                if (!file) return;
+                const transfer = new DataTransfer();
+                transfer.items.add(file);
+                input.files = transfer.files;
+                showFile(file);
+            });
+
+            showFile(input.files[0]);
+        })();
+    </script>
 </body>
 </html>
