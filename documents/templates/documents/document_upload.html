@@ -6,19 +6,118 @@
     <title>Upload Document - TrustVault</title>
     {% load static %}<link rel="stylesheet" href="{% static 'css/trustvault.css' %}">
 </head>
-<body class="tv-content-page">
-    <h1>Upload a Document</h1>
+<body class="tv-content-page tv-upload-page">
+    <header class="tv-upload-header">
+        <a class="tv-upload-brand" href="{% url 'document_list' %}" aria-label="TrustVault documents">
+            <span class="tv-upload-brand-mark" aria-hidden="true">T</span>
+            <span>TrustVault</span>
+        </a>
+        <a class="tv-upload-back" href="{% url 'document_list' %}">
+            <span aria-hidden="true">&larr;</span> Back to documents
+        </a>
+    </header>
 
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
+    <main class="tv-upload-main">
+        <div class="tv-upload-heading">
+            <div>
+                <p class="tv-upload-eyebrow">DOCUMENT LIBRARY <span></span> NEW UPLOAD</p>
+                <h1>Securely upload a document</h1>
+                <p class="tv-upload-intro">Add a file to your vault and keep important information organized in one place.</p>
+            </div>
+            <div class="tv-upload-status"><span></span> PRIVATE BY DEFAULT</div>
+        </div>
 
-        {{ form.as_p }}
+        <div class="tv-upload-layout">
+            <section class="tv-upload-card" aria-labelledby="upload-form-title">
+                <div class="tv-upload-card-heading">
+                    <div class="tv-upload-heading-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 id="upload-form-title">Document details</h2>
+                        <p>Tell us a little about this file.</p>
+                    </div>
+                </div>
 
-        <button type="submit">Upload</button>
-    </form>
+                <form method="post" enctype="multipart/form-data" class="tv-upload-form">
+                    {% csrf_token %}
 
-    <p>
-        <a href="{% url 'document_list' %}">Back to documents</a>
-    </p>
+                    {% if form.non_field_errors %}
+                    <div class="tv-upload-error-summary" role="alert">
+                        {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="tv-upload-field">
+                        <label for="{{ form.title.id_for_label }}">Document name <span>*</span></label>
+                        {{ form.title }}
+                        {% if form.title.errors %}<div class="tv-upload-field-error" role="alert">{{ form.title.errors }}</div>{% endif %}
+                        {% if form.title.help_text %}<p class="tv-upload-help">{{ form.title.help_text }}</p>{% endif %}
+                    </div>
+
+                    <div class="tv-upload-field">
+                        <label for="{{ form.file.id_for_label }}">Choose a file <span>*</span></label>
+                        <div class="tv-upload-file-control">
+                            {{ form.file }}
+                            <p>Supported: PDF, TXT, DOCX, PNG, JPG, JPEG <span>Up to 10 MB</span></p>
+                        </div>
+                        {% if form.file.errors %}<div class="tv-upload-field-error" role="alert">{{ form.file.errors }}</div>{% endif %}
+                        {% if form.file.help_text %}<p class="tv-upload-help">{{ form.file.help_text }}</p>{% endif %}
+                    </div>
+
+                    <div class="tv-upload-field">
+                        <label for="{{ form.category.id_for_label }}">Category <span>*</span></label>
+                        {{ form.category }}
+                        {% if form.category.errors %}<div class="tv-upload-field-error" role="alert">{{ form.category.errors }}</div>{% endif %}
+                        {% if form.category.help_text %}<p class="tv-upload-help">{{ form.category.help_text }}</p>{% endif %}
+                    </div>
+
+                    <div class="tv-upload-field">
+                        <label for="{{ form.description.id_for_label }}">Description <span class="tv-upload-optional">OPTIONAL</span></label>
+                        {{ form.description }}
+                        {% if form.description.errors %}<div class="tv-upload-field-error" role="alert">{{ form.description.errors }}</div>{% endif %}
+                        {% if form.description.help_text %}<p class="tv-upload-help">{{ form.description.help_text }}</p>{% endif %}
+                    </div>
+
+                    <div class="tv-upload-actions">
+                        <a href="{% url 'document_list' %}" class="tv-upload-cancel">Cancel</a>
+                        <button type="submit" class="tv-upload-submit">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Upload document
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <aside class="tv-upload-aside">
+                <section class="tv-upload-assurance">
+                    <div class="tv-upload-shield" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M12 3 19 6v5c0 4.6-2.9 8-7 10-4.1-2-7-5.4-7-10V6l7-3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                            <path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h2>Your files stay yours</h2>
+                    <p>Documents are private to your account unless you choose to share them.</p>
+                    <div class="tv-upload-assurance-rule"></div>
+                    <ul>
+                        <li><span aria-hidden="true">✓</span> Private by default</li>
+                        <li><span aria-hidden="true">✓</span> Share access when you’re ready</li>
+                        <li><span aria-hidden="true">✓</span> Track activity in your vault</li>
+                    </ul>
+                </section>
+
+                <section class="tv-upload-file-note">
+                    <span class="tv-upload-note-icon" aria-hidden="true">i</span>
+                    <p><strong>Before you upload</strong><br>Use a clear name and category so your document is easy to find later.</p>
+                </section>
+            </aside>
+        </div>
+        <p class="tv-upload-footer">Protected document storage <span aria-hidden="true">·</span> TrustVault</p>
+    </main>
 </body>
 </html>
