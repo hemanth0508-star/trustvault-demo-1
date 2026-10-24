@@ -1,1 +1,60 @@
-{% load static %}<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sign in · TrustVault</title><link rel="stylesheet" href="{% static 'css/trustvault.css' %}"></head><body class="tv-auth-body"><main class="tv-auth-wrap"><div class="tv-auth-brand"><div class="tv-mark" aria-hidden="true">♢</div><h1>Trust<span>Vault</span></h1><p>Your files. Your control. Your trust.</p></div><section class="tv-auth-card"><h2>Welcome back</h2><p class="tv-subtitle">Sign in to securely access your documents.</p>{% if messages %}{% for message in messages %}<div class="tv-success">{{ message }}</div>{% endfor %}{% endif %}{% if form.errors %}<div class="tv-error" role="alert">Username or password is incorrect. Please try again.</div>{% endif %}{% if next and user.is_authenticated %}<div class="tv-error">Your account cannot access that page.</div>{% endif %}<form method="post" action="{% url 'login' %}">{% csrf_token %}<input type="hidden" name="next" value="{{ next|default:'' }}"><div class="tv-field"><label for="id_username">Username</label><input id="id_username" name="username" autocomplete="username" required autofocus value="{{ form.username.value|default:'' }}"></div><div class="tv-field"><label for="id_password">Password</label><input id="id_password" type="password" name="password" autocomplete="current-password" required><button class="tv-toggle" type="button" data-toggle-password="id_password">Show password</button></div><button class="tv-btn tv-btn-primary" type="submit">Secure sign in <span aria-hidden="true">→</span></button></form><div class="tv-divider"></div><div class="tv-auth-foot">New to TrustVault? <a href="{% url 'register' %}">Create an account</a></div><div class="tv-auth-foot"><a href="{% url 'home' %}">← Back to home</a></div></section></main><script>document.querySelectorAll('[data-toggle-password]').forEach(b=>b.addEventListener('click',()=>{const i=document.getElementById(b.dataset.togglePassword);i.type=i.type==='password'?'text':'password';b.textContent=i.type==='password'?'Show password':'Hide password'}));</script></body></html>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in · TrustVault</title>
+    <link rel="stylesheet" href="{% static 'css/trustvault.css' %}">
+</head>
+<body class="tv-auth-body">
+    <main class="tv-auth-wrap">
+        <a class="tv-auth-home-link" href="{% url 'home' %}" aria-label="Back to TrustVault home">← Home</a>
+        <div class="tv-auth-brand">
+            <div class="tv-mark" aria-hidden="true">T</div>
+            <h1>Trust<span>Vault</span></h1>
+            <p>Your files. Your control. Your trust.</p>
+        </div>
+        <section class="tv-auth-card" aria-labelledby="login-title">
+            <div class="tv-auth-card-kicker"><span aria-hidden="true"></span> PRIVATE DOCUMENT WORKSPACE</div>
+            <h2 id="login-title">Welcome back</h2>
+            <p class="tv-subtitle">Sign in to securely access your documents.</p>
+
+            {% if messages %}
+                {% for message in messages %}<div class="tv-success" role="status">{{ message }}</div>{% endfor %}
+            {% endif %}
+            {% if form.errors %}<div class="tv-error" role="alert">Username or password is incorrect. Please try again.</div>{% endif %}
+            {% if next and user.is_authenticated %}<div class="tv-error" role="alert">Your account cannot access that page.</div>{% endif %}
+
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next|default:'' }}">
+                <div class="tv-field">
+                    <label for="id_username">Username</label>
+                    <input id="id_username" name="username" autocomplete="username" required autofocus value="{{ form.username.value|default:'' }}">
+                </div>
+                <div class="tv-field">
+                    <label for="id_password">Password</label>
+                    <input id="id_password" type="password" name="password" autocomplete="current-password" required>
+                    <button class="tv-toggle" type="button" data-toggle-password="id_password" aria-controls="id_password">Show password</button>
+                </div>
+                <button class="tv-btn tv-btn-primary" type="submit">Secure sign in <span aria-hidden="true">→</span></button>
+            </form>
+
+            <div class="tv-divider"></div>
+            <div class="tv-auth-foot">New to TrustVault? <a href="{% url 'register' %}">Create an account</a></div>
+        </section>
+        <p class="tv-auth-privacy"><span aria-hidden="true">✓</span> Your documents remain private until you choose to share them.</p>
+    </main>
+    <script>
+        document.querySelectorAll("[data-toggle-password]").forEach((button) => {
+            button.addEventListener("click", () => {
+                const input = document.getElementById(button.dataset.togglePassword);
+                if (!input) return;
+                input.type = input.type === "password" ? "text" : "password";
+                button.textContent = input.type === "password" ? "Show password" : "Hide password";
+            });
+        });
+    </script>
+</body>
+</html>

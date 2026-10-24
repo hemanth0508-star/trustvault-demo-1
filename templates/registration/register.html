@@ -1,1 +1,61 @@
-{% load static %}<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Create account · TrustVault</title><link rel="stylesheet" href="{% static 'css/trustvault.css' %}"></head><body class="tv-auth-body"><main class="tv-auth-wrap"><div class="tv-auth-brand"><div class="tv-mark" aria-hidden="true">♢</div><h1>Trust<span>Vault</span></h1><p>Private document sharing, made simple.</p></div><section class="tv-auth-card"><h2>Create your account</h2><p class="tv-subtitle">Join TrustVault to keep documents organized and controlled.</p><div class="tv-help">Use a unique password. New registrations receive standard user access only.</div><form method="post" novalidate>{% csrf_token %}{% if form.non_field_errors %}<div class="tv-error">{{ form.non_field_errors }}</div>{% endif %}{% for field in form %}<div class="tv-field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.help_text %}<div class="helptext">{{ field.help_text|safe }}</div>{% endif %}{% for error in field.errors %}<div class="tv-error">{{ error }}</div>{% endfor %}{% if field.name == 'password1' or field.name == 'password2' %}<button class="tv-toggle" type="button" data-toggle-password="{{ field.id_for_label }}">Show password</button>{% endif %}</div>{% endfor %}<button class="tv-btn tv-btn-primary" type="submit">Create secure account <span aria-hidden="true">→</span></button></form><div class="tv-auth-foot">Already registered? <a href="{% url 'login' %}">Sign in</a></div><div class="tv-auth-foot"><a href="{% url 'home' %}">← Back to home</a></div></section></main><script>document.querySelectorAll('input').forEach(i=>{if(i.type==='text'&&i.name==='username')i.autocomplete='username';if(i.name==='email')i.autocomplete='email';if(i.name==='password1'){i.autocomplete='new-password';i.id='id_password1'}if(i.name==='password2'){i.autocomplete='new-password';i.id='id_password2'}});document.querySelectorAll('[data-toggle-password]').forEach(b=>b.addEventListener('click',()=>{const i=document.getElementById(b.dataset.togglePassword);i.type=i.type==='password'?'text':'password';b.textContent=i.type==='password'?'Show password':'Hide password'}));</script></body></html>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create account · TrustVault</title>
+    <link rel="stylesheet" href="{% static 'css/trustvault.css' %}">
+</head>
+<body class="tv-auth-body">
+    <main class="tv-auth-wrap tv-register-wrap">
+        <a class="tv-auth-home-link" href="{% url 'home' %}" aria-label="Back to TrustVault home">← Home</a>
+        <div class="tv-auth-brand">
+            <div class="tv-mark" aria-hidden="true">T</div>
+            <h1>Trust<span>Vault</span></h1>
+            <p>Private document sharing, made simple.</p>
+        </div>
+        <section class="tv-auth-card" aria-labelledby="register-title">
+            <div class="tv-auth-card-kicker"><span aria-hidden="true"></span> START YOUR PRIVATE WORKSPACE</div>
+            <h2 id="register-title">Create your account</h2>
+            <p class="tv-subtitle">Keep your documents organized and access under your control.</p>
+            <div class="tv-help"><strong>Good to know</strong><br>Use a unique password. New registrations receive standard user access only.</div>
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% if form.non_field_errors %}<div class="tv-error" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+                {% for field in form %}
+                    <div class="tv-field">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}<div class="helptext">{{ field.help_text|safe }}</div>{% endif %}
+                        {% if field.errors %}<div class="tv-error" role="alert">{{ field.errors }}</div>{% endif %}
+                        {% if field.name == 'password1' or field.name == 'password2' %}
+                            <button class="tv-toggle" type="button" data-toggle-password="{{ field.id_for_label }}" aria-controls="{{ field.id_for_label }}">Show password</button>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <button class="tv-btn tv-btn-primary" type="submit">Create secure account <span aria-hidden="true">→</span></button>
+            </form>
+            <div class="tv-divider"></div>
+            <div class="tv-auth-foot">Already registered? <a href="{% url 'login' %}">Sign in</a></div>
+        </section>
+        <p class="tv-auth-privacy"><span aria-hidden="true">✓</span> Your documents remain private until you choose to share them.</p>
+    </main>
+    <script>
+        document.querySelectorAll("input").forEach((input) => {
+            if (input.type === "text" && input.name === "username") input.autocomplete = "username";
+            if (input.name === "email") input.autocomplete = "email";
+            if (input.name === "password1" || input.name === "password2") input.autocomplete = "new-password";
+        });
+        document.querySelectorAll("[data-toggle-password]").forEach((button) => {
+            button.addEventListener("click", () => {
+                const input = document.getElementById(button.dataset.togglePassword);
+                if (!input) return;
+                input.type = input.type === "password" ? "text" : "password";
+                button.textContent = input.type === "password" ? "Show password" : "Hide password";
+            });
+        });
+    </script>
+</body>
+</html>

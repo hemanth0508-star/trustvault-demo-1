@@ -3,145 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>TrustVault | Edit Document</title>
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f6f9;
-            color: #222;
-        }
-
-        header {
-            background: #172554;
-            color: white;
-            padding: 20px 5%;
-        }
-
-        header h1 {
-            margin: 0;
-        }
-
-        .container {
-            max-width: 650px;
-            margin: 35px auto;
-            padding: 25px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        }
-
-        label {
-            display: block;
-            margin-top: 16px;
-            margin-bottom: 7px;
-            font-weight: bold;
-        }
-
-        input,
-        select,
-        textarea {
-            width: 100%;
-            padding: 11px;
-            border: 1px solid #cbd5e1;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-        textarea {
-            min-height: 110px;
-            resize: vertical;
-        }
-
-        .helptext {
-            display: block;
-            margin-top: 5px;
-            color: #64748b;
-            font-size: 13px;
-        }
-
-        .errorlist {
-            color: #dc2626;
-        }
-
-        .button {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 11px 16px;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .primary {
-            background: #2563eb;
-            color: white;
-        }
-
-        .secondary {
-            background: #e5e7eb;
-            color: #111827;
-            margin-left: 8px;
-        }
-    </style>
+    <title>Edit document · TrustVault</title>
     {% load static %}<link rel="stylesheet" href="{% static 'css/trustvault.css' %}">
 </head>
-
-<body class="tv-content-page">
-
-<header>
-    <h1>TrustVault</h1>
-    <p>Edit Document</p>
-</header>
-
-<main class="container">
-
-    <h2>{{ document.title }}</h2>
-
-    <p>Update the document details below.</p>
-
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-
-        {{ form.non_field_errors }}
-
-        {% for field in form %}
-            <label for="{{ field.id_for_label }}">
-                {{ field.label }}
-            </label>
-
-            {{ field }}
-
-            {% if field.help_text %}
-                <small class="helptext">
-                    {{ field.help_text }}
-                </small>
-            {% endif %}
-
-            {{ field.errors }}
-        {% endfor %}
-
-        <button class="button primary" type="submit">
-            Save Changes
-        </button>
-
-        <a
-            class="button secondary"
-            href="{% url 'document_list' %}"
-        >
-            Cancel
+<body class="tv-content-page tv-form-page">
+    <header class="tv-workspace-header">
+        <a class="tv-workspace-brand" href="{% url 'document_list' %}" aria-label="TrustVault documents">
+            <span class="tv-workspace-brand-mark" aria-hidden="true">T</span>
+            <span><strong>TrustVault</strong><small>SECURE DOCUMENT WORKSPACE</small></span>
         </a>
-    </form>
-
-</main>
-
+        <nav class="tv-workspace-nav" aria-label="Account navigation">
+            <a class="tv-nav-link" href="{% url 'document_list' %}">My documents</a>
+            <a class="tv-nav-logout" href="{% url 'logout' %}">Log out</a>
+        </nav>
+    </header>
+    <main class="tv-form-main">
+        <a class="tv-form-back" href="{% url 'document_list' %}"><span aria-hidden="true">←</span> Back to documents</a>
+        <section class="tv-form-hero">
+            <p class="tv-workspace-eyebrow">DOCUMENT LIBRARY <span aria-hidden="true">·</span> EDIT DETAILS</p>
+            <h1>Update your document</h1>
+            <p>Make changes to <strong>{{ document.title }}</strong>.</p>
+        </section>
+        <div class="tv-form-layout">
+            <section class="tv-form-card" aria-labelledby="edit-form-title">
+                <div class="tv-form-card-heading">
+                    <span class="tv-form-card-icon" aria-hidden="true">✎</span>
+                    <div><h2 id="edit-form-title">Document details</h2><p>Changes will be saved to this document.</p></div>
+                </div>
+                <form method="post" enctype="multipart/form-data" class="tv-workspace-form">
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}<div class="tv-workspace-form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+                    {% for field in form %}
+                        <div class="tv-workspace-form-field">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.help_text %}<small class="tv-workspace-form-help">{{ field.help_text }}</small>{% endif %}
+                            {% if field.errors %}<div class="tv-workspace-form-errors" role="alert">{{ field.errors }}</div>{% endif %}
+                        </div>
+                    {% endfor %}
+                    <div class="tv-workspace-form-actions">
+                        <a class="tv-workspace-cancel" href="{% url 'document_list' %}">Cancel</a>
+                        <button class="tv-workspace-submit" type="submit">Save changes <span aria-hidden="true">→</span></button>
+                    </div>
+                </form>
+            </section>
+            <aside class="tv-form-aside">
+                <span class="tv-form-aside-icon" aria-hidden="true">✓</span>
+                <h2>Keep control of your files</h2>
+                <p>Document access remains under your control. You can manage sharing from your document library.</p>
+                <a href="{% url 'document_list' %}">Return to your library <span aria-hidden="true">→</span></a>
+            </aside>
+        </div>
+    </main>
+    <footer class="tv-workspace-footer">TrustVault <span aria-hidden="true">·</span> Secure document sharing</footer>
 </body>
 </html>

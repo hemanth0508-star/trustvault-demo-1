@@ -3,24 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Share Document - TrustVault</title>
+    <title>Share document · TrustVault</title>
     {% load static %}<link rel="stylesheet" href="{% static 'css/trustvault.css' %}">
 </head>
-<body class="tv-content-page">
-    <h1>Share Document</h1>
-
-    <h2>{{ document.title }}</h2>
-
-    <form method="post">
-        {% csrf_token %}
-
-        {{ form.as_p }}
-
-        <button type="submit">Save Permissions</button>
-    </form>
-
-    <p>
-        <a href="{% url 'document_list' %}">Back to Documents</a>
-    </p>
+<body class="tv-content-page tv-form-page">
+    <header class="tv-workspace-header">
+        <a class="tv-workspace-brand" href="{% url 'document_list' %}" aria-label="TrustVault documents">
+            <span class="tv-workspace-brand-mark" aria-hidden="true">T</span>
+            <span><strong>TrustVault</strong><small>SECURE DOCUMENT WORKSPACE</small></span>
+        </a>
+        <nav class="tv-workspace-nav" aria-label="Account navigation">
+            <a class="tv-nav-link" href="{% url 'document_list' %}">My documents</a>
+            <a class="tv-nav-logout" href="{% url 'logout' %}">Log out</a>
+        </nav>
+    </header>
+    <main class="tv-form-main">
+        <a class="tv-form-back" href="{% url 'document_list' %}"><span aria-hidden="true">←</span> Back to documents</a>
+        <section class="tv-form-hero">
+            <p class="tv-workspace-eyebrow">DOCUMENT LIBRARY <span aria-hidden="true">·</span> SHARING</p>
+            <h1>Share a document</h1>
+            <p>Choose a TrustVault user and decide what they’re allowed to do.</p>
+        </section>
+        <div class="tv-form-layout">
+            <section class="tv-form-card" aria-labelledby="share-form-title">
+                <div class="tv-form-card-heading">
+                    <span class="tv-form-card-icon tv-form-share-icon" aria-hidden="true">↗</span>
+                    <div><h2 id="share-form-title">{{ document.title }}</h2><p>Set or update access permissions.</p></div>
+                </div>
+                <form method="post" class="tv-workspace-form">
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}<div class="tv-workspace-form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+                    {% for field in form %}
+                        <div class="tv-workspace-form-field{% if field.field.widget.input_type == 'checkbox' %} tv-workspace-checkbox-field{% endif %}">
+                            {% if field.field.widget.input_type == 'checkbox' %}
+                                <label class="tv-workspace-checkbox-label" for="{{ field.id_for_label }}">{{ field }}<span><strong>{{ field.label }}</strong>{% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}</span></label>
+                            {% else %}
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                {{ field }}
+                                {% if field.help_text %}<small class="tv-workspace-form-help">{{ field.help_text }}</small>{% endif %}
+                            {% endif %}
+                            {% if field.errors %}<div class="tv-workspace-form-errors" role="alert">{{ field.errors }}</div>{% endif %}
+                        </div>
+                    {% endfor %}
+                    <div class="tv-workspace-form-actions">
+                        <a class="tv-workspace-cancel" href="{% url 'document_list' %}">Cancel</a>
+                        <button class="tv-workspace-submit" type="submit">Save permissions <span aria-hidden="true">→</span></button>
+                    </div>
+                </form>
+            </section>
+            <aside class="tv-form-aside tv-share-aside">
+                <span class="tv-form-aside-icon" aria-hidden="true">♧</span>
+                <h2>You’re in control</h2>
+                <p>Only share with people who need access. You can change these permissions or revoke access from your document library.</p>
+                <div class="tv-share-permission-note"><span aria-hidden="true">✓</span><span><strong>View and download</strong><small>Lets the selected user read the document.</small></span></div>
+                <div class="tv-share-permission-note"><span aria-hidden="true">✎</span><span><strong>Edit</strong><small>Lets the selected user update document details.</small></span></div>
+            </aside>
+        </div>
+    </main>
+    <footer class="tv-workspace-footer">TrustVault <span aria-hidden="true">·</span> Secure document sharing</footer>
 </body>
 </html>
