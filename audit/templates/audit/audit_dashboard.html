@@ -3,214 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>TrustVault | Audit Dashboard</title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f7fb;
-            color: #172033;
-            margin: 0;
-        }
-
-        header {
-            background: #101d35;
-            color: white;
-            padding: 22px 6%;
-        }
-
-        header h1 {
-            margin: 0;
-        }
-
-        main {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-
-        .filters {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 22px;
-        }
-
-        input, select, button {
-            padding: 10px;
-            margin: 5px;
-        }
-
-        button {
-            background: #1769e0;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .table-container {
-            overflow-x: auto;
-            background: white;
-            border-radius: 10px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 13px;
-            border-bottom: 1px solid #e4e8ef;
-            text-align: left;
-        }
-
-        th {
-            background: #eaf0f9;
-        }
-
-        .success {
-            color: #16803c;
-            font-weight: bold;
-        }
-
-        .denied {
-            color: #c62828;
-            font-weight: bold;
-        }
-
-        .details {
-            font-size: 12px;
-            overflow-wrap: anywhere;
-        }
-
-        footer {
-            text-align: center;
-            padding: 25px;
-            color: #64748b;
-        }
-    </style>
+    <title>TrustVault | Security Audit</title>
     {% load static %}<link rel="stylesheet" href="{% static 'css/trustvault.css' %}">
 </head>
+<body class="tv-content-page tv-audit-page">
+    <header class="tv-workspace-header">
+        <a class="tv-workspace-brand" href="{% url 'document_list' %}" aria-label="TrustVault documents">
+            <span class="tv-workspace-brand-mark" aria-hidden="true">T</span>
+            <span><strong>TrustVault</strong><small>SECURE DOCUMENT WORKSPACE</small></span>
+        </a>
+        <nav class="tv-workspace-nav" aria-label="Account navigation">
+            <a class="tv-nav-link" href="{% url 'document_list' %}">My documents</a>
+            <a class="tv-nav-logout" href="{% url 'logout' %}">Log out</a>
+        </nav>
+    </header>
 
-<body class="tv-content-page">
+    <main class="tv-audit-main">
+        <section class="tv-audit-hero">
+            <div>
+                <p class="tv-workspace-eyebrow">SECURITY &amp; COMPLIANCE</p>
+                <h1>Audit activity</h1>
+                <p>Review recent document events and access outcomes across TrustVault.</p>
+            </div>
+            <div class="tv-audit-status"><span aria-hidden="true"></span> AUDIT LOG ACTIVE</div>
+        </section>
 
-<header>
-    <h1>TrustVault</h1>
-    <p>Security Audit Dashboard</p>
-</header>
+        <section class="tv-audit-summary" aria-label="Audit log summary">
+            <div class="tv-audit-summary-item">
+                <span class="tv-audit-summary-icon" aria-hidden="true">◷</span>
+                <div><strong>Recent activity</strong><span>Latest events first</span></div>
+            </div>
+            <div class="tv-audit-summary-item">
+                <span class="tv-audit-summary-icon tv-audit-summary-icon-green" aria-hidden="true">✓</span>
+                <div><strong>Append-only records</strong><span>Events are recorded for review</span></div>
+            </div>
+            <div class="tv-audit-summary-count"><strong>{{ events|length }}</strong><span>events shown · max 200</span></div>
+        </section>
 
-<main>
+        <section class="tv-audit-filter-card" aria-labelledby="audit-filter-title">
+            <div class="tv-audit-filter-heading">
+                <div>
+                    <p class="tv-workspace-eyebrow">NARROW THE RESULTS</p>
+                    <h2 id="audit-filter-title">Filter activity</h2>
+                </div>
+            </div>
+            <form method="get" class="tv-audit-filter-form">
+                <label class="tv-filter-field">
+                    <span>Event type</span>
+                    <select name="event_type" id="event_type">
+                        <option value="">All events</option>
+                        {% for code, label in event_choices %}
+                            <option value="{{ code }}" {% if selected_event_type == code %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <label class="tv-filter-field">
+                    <span>Username</span>
+                    <input type="text" id="username" name="username" value="{{ username_query }}" placeholder="Search username">
+                </label>
+                <div class="tv-audit-filter-actions">
+                    <button class="tv-filter-submit" type="submit">Apply filters</button>
+                    <a class="tv-filter-clear" href="{% url 'audit_dashboard' %}">Reset</a>
+                </div>
+            </form>
+        </section>
 
-    <h2>Document Activity</h2>
-
-    <form method="get" class="filters">
-
-        <label for="event_type">Event type:</label>
-
-        <select name="event_type" id="event_type">
-            <option value="">All events</option>
-
-            {% for code, label in event_choices %}
-                <option
-                    value="{{ code }}"
-                    {% if selected_event_type == code %}
-                        selected
-                    {% endif %}
-                >
-                    {{ label }}
-                </option>
-            {% endfor %}
-        </select>
-
-        <label for="username">Username:</label>
-
-        <input
-            type="text"
-            id="username"
-            name="username"
-            value="{{ username_query }}"
-            placeholder="Search username"
-        >
-
-        <button type="submit">Filter</button>
-
-        <a href="{% url 'audit_dashboard' %}">Clear</a>
-
-    </form>
-
-    <div class="table-container">
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Timestamp</th>
-                    <th>Event</th>
-                    <th>Actor</th>
-                    <th>Document</th>
-                    <th>Result</th>
-                    <th>IP Address</th>
-                    <th>Details</th>
-                </tr>
-            </thead>
-
-            <tbody>
-
-                {% for event in events %}
-                    <tr>
-                        <td>{{ event.timestamp|date:"d M Y, H:i:s" }}</td>
-
-                        <td>{{ event.get_event_type_display }}</td>
-
-                        <td>
-                            {% if event.actor %}
-                                {{ event.actor.username }}
-                            {% else %}
-                                Unknown
-                            {% endif %}
-                        </td>
-
-                        <td>
-                            {% if event.document %}
-                                {{ event.document.title }}
-                            {% else %}
-                                Unavailable
-                            {% endif %}
-                        </td>
-
-                        <td>
-                            {% if event.success %}
-                                <span class="success">Success</span>
-                            {% else %}
-                                <span class="denied">Denied</span>
-                            {% endif %}
-                        </td>
-
-                        <td>{{ event.ip_address|default:"Unavailable" }}</td>
-
-                        <td class="details">{{ event.details }}</td>
-                    </tr>
-
-                {% empty %}
-                    <tr>
-                        <td colspan="7">No audit events found.</td>
-                    </tr>
-                {% endfor %}
-
-            </tbody>
-        </table>
-
-    </div>
-
-    <p>Showing up to 200 recent events.</p>
-
-</main>
-
-<footer>
-    TrustVault &copy; 2026 — Secure Document Sharing
-</footer>
-
+        <section class="tv-audit-log-card" aria-labelledby="audit-log-title">
+            <div class="tv-audit-log-heading">
+                <div>
+                    <p class="tv-workspace-eyebrow">LATEST RECORDS</p>
+                    <h2 id="audit-log-title">Document activity</h2>
+                </div>
+                <span class="tv-audit-log-count">{{ events|length }} shown</span>
+            </div>
+            <div class="tv-audit-table-wrap">
+                <table class="tv-audit-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Timestamp</th>
+                            <th scope="col">Event</th>
+                            <th scope="col">Actor</th>
+                            <th scope="col">Document</th>
+                            <th scope="col">Result</th>
+                            <th scope="col">IP address</th>
+                            <th scope="col">Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in events %}
+                            <tr>
+                                <td><time datetime="{{ event.timestamp|date:'c' }}">{{ event.timestamp|date:"d M Y, H:i:s" }}</time></td>
+                                <td><span class="tv-audit-event">{{ event.get_event_type_display }}</span></td>
+                                <td>{% if event.actor %}{{ event.actor.username }}{% else %}<span class="tv-audit-muted">Unknown</span>{% endif %}</td>
+                                <td>{% if event.document %}{{ event.document.title }}{% else %}<span class="tv-audit-muted">Unavailable</span>{% endif %}</td>
+                                <td>
+                                    {% if event.success %}
+                                        <span class="tv-audit-result tv-audit-result-success"><span aria-hidden="true"></span>Success</span>
+                                    {% else %}
+                                        <span class="tv-audit-result tv-audit-result-denied"><span aria-hidden="true"></span>Denied</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ event.ip_address|default:"Unavailable" }}</td>
+                                <td class="tv-audit-details">{{ event.details }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td class="tv-audit-empty" colspan="7">
+                                    <strong>No audit events found</strong>
+                                    <span>Try changing or clearing your filters to see more results.</span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <p class="tv-audit-note">Showing up to 200 recent events. Timestamps are displayed in the configured server timezone.</p>
+        </section>
+    </main>
+    <footer class="tv-workspace-footer">TrustVault <span aria-hidden="true">·</span> Security audit dashboard</footer>
 </body>
 </html>
