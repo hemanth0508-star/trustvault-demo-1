@@ -14,7 +14,10 @@
         </a>
         <nav class="tv-workspace-nav" aria-label="Account navigation">
             <a class="tv-nav-link" href="{% url 'document_list' %}">My documents</a>
-            <a class="tv-nav-logout" href="{% url 'logout' %}">Log out</a>
+            <form class="tv-logout-form" method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button class="tv-nav-logout" type="submit">Log out</button>
+            </form>
         </nav>
     </header>
     <main class="tv-form-main">

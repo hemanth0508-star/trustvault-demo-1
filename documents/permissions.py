@@ -1,4 +1,25 @@
+from django.db.models import BooleanField, Case, Exists, OuterRef, Value, When
+
 from .models import DocumentPermission
+
+
+def annotate_document_read_access(events, user):
+    readable_permissions = DocumentPermission.objects.filter(
+        document_id=OuterRef("document_id"),
+        user_id=user.pk,
+        user__is_active=True,
+        can_read=True,
+    )
+
+    document_is_readable = Exists(readable_permissions)
+    if user.is_active:
+        document_is_readable = Case(
+            When(document__owner_id=user.pk, then=Value(True)),
+            default=document_is_readable,
+            output_field=BooleanField(),
+        )
+
+    return events.annotate(document_is_readable=document_is_readable)
 
 
 def can_read_document(user, document):

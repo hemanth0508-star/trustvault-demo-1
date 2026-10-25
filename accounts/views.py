@@ -16,7 +16,11 @@ class TrustVaultLoginView(LoginView):
 
 def register(request):
     if request.user.is_authenticated:
-        return redirect("document_list")
+        messages.info(
+            request,
+            "You are already signed in. Your private vault is ready.",
+        )
+        return redirect("home")
 
     if request.method == "POST":
         form = RegistrationForm(request.POST)

@@ -11,6 +11,7 @@ from audit.models import AuditEvent
 from .forms import DocumentUploadForm, DocumentShareForm
 from .models import Document, DocumentPermission
 from .permissions import (
+    annotate_document_read_access,
     can_read_document,
     can_edit_document,
 )
@@ -119,6 +120,23 @@ def document_list(request):
     shared_documents = Document.objects.filter(
         pk__in=shared_document_ids
     ).exclude(owner=request.user)
+    owned_document_count = Document.objects.filter(
+        owner=request.user
+    ).count()
+    shared_document_count = shared_documents.count()
+    shares_granted_count = DocumentPermission.objects.filter(
+        document__owner=request.user,
+        user__is_active=True,
+    ).count()
+    user_activity = annotate_document_read_access(
+        AuditEvent.objects.filter(actor=request.user),
+        request.user,
+    )
+    activity_event_count = user_activity.count()
+    recent_activity = (
+        user_activity.select_related("document")
+        .order_by("-timestamp")[:4]
+    )
 
     # Search by title or description
     if search_query:
@@ -198,6 +216,11 @@ def document_list(request):
             "date_from": date_from,
             "date_to": date_to,
             "category_choices": Document.CATEGORY_CHOICES,
+            "owned_document_count": owned_document_count,
+            "shared_document_count": shared_document_count,
+            "shares_granted_count": shares_granted_count,
+            "activity_event_count": activity_event_count,
+            "recent_activity": recent_activity,
         },
     )
 # --------------------------------------------------

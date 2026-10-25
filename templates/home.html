@@ -19,8 +19,17 @@
             <a href="#features">Features</a>
             <a href="#security">Security</a>
             <a href="#about">About</a>
-            <a class="tv-home-signin" href="{% url 'login' %}">Sign in</a>
-            <a class="tv-home-nav-cta" href="{% url 'register' %}">Create account <span aria-hidden="true">→</span></a>
+            {% if user.is_authenticated %}
+                <a class="tv-home-signin" href="{% url 'document_list' %}">My vault</a>
+                {% if user.is_staff %}<a class="tv-home-signin" href="{% url 'audit_dashboard' %}">Audit</a>{% endif %}
+                <form class="tv-home-logout" method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">Log out</button>
+                </form>
+            {% else %}
+                <a class="tv-home-signin" href="{% url 'login' %}">Sign in</a>
+                <a class="tv-home-nav-cta" href="{% url 'register' %}">Create account <span aria-hidden="true">→</span></a>
+            {% endif %}
         </nav>
     </header>
 
@@ -28,12 +37,27 @@
         <section class="tv-home-hero" id="about">
             <div class="tv-home-grid" aria-hidden="true"></div>
             <div class="tv-home-hero-copy">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="tv-home-notice" role="status">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
                 <div class="tv-home-kicker"><span aria-hidden="true"></span> PRIVATE DOCUMENT WORKSPACE</div>
-                <h1>Your documents.<br><span>Your control.</span></h1>
-                <p>Store important files, share them with the right people, and stay in control of access — all from one secure workspace.</p>
+                {% if user.is_authenticated %}
+                    <h1>Welcome back,<br><span>{{ user.username }}</span></h1>
+                    <p>Your private workspace is ready. Continue to your vault to manage documents, review sharing, and check recent activity.</p>
+                {% else %}
+                    <h1>Your documents.<br><span>Your control.</span></h1>
+                    <p>Keep important files organized in a private vault. Share documents only with the people you choose, and review activity when you need to.</p>
+                {% endif %}
                 <div class="tv-home-actions">
-                    <a class="tv-home-primary-cta" href="{% url 'register' %}">Get started <span aria-hidden="true">→</span></a>
-                    <a class="tv-home-secondary-cta" href="{% url 'login' %}">Sign in to your vault</a>
+                    {% if user.is_authenticated %}
+                        <a class="tv-home-primary-cta" href="{% url 'document_list' %}">Open my vault <span aria-hidden="true">→</span></a>
+                        {% if user.is_staff %}<a class="tv-home-secondary-cta" href="{% url 'audit_dashboard' %}">Review security activity</a>{% endif %}
+                    {% else %}
+                        <a class="tv-home-primary-cta" href="{% url 'register' %}">Create your account <span aria-hidden="true">→</span></a>
+                        <a class="tv-home-secondary-cta" href="{% url 'login' %}">Sign in to your vault</a>
+                    {% endif %}
                 </div>
                 <div class="tv-home-trust-row">
                     <span><b aria-hidden="true">✓</b> Private by default</span>
@@ -47,54 +71,62 @@
                 <div class="tv-home-vault-card">
                     <div class="tv-home-vault-top"><span class="tv-home-vault-icon" aria-hidden="true">T</span><span class="tv-home-vault-lock">PRIVATE VAULT <b aria-hidden="true">●</b></span></div>
                     <div class="tv-home-vault-title">Your documents</div>
-                    <div class="tv-home-file"><span class="tv-home-file-icon tv-home-file-blue" aria-hidden="true">▤</span><span><strong>Project brief</strong><small>Private · Updated today</small></span><span class="tv-home-file-more" aria-hidden="true">···</span></div>
-                    <div class="tv-home-file"><span class="tv-home-file-icon tv-home-file-purple" aria-hidden="true">▤</span><span><strong>Team agreement</strong><small>Shared with 2 people</small></span><span class="tv-home-file-more" aria-hidden="true">···</span></div>
-                    <div class="tv-home-file"><span class="tv-home-file-icon tv-home-file-green" aria-hidden="true">▤</span><span><strong>Budget summary</strong><small>Private · Updated yesterday</small></span><span class="tv-home-file-more" aria-hidden="true">···</span></div>
-                    <div class="tv-home-vault-foot"><span aria-hidden="true">✓</span> Your files are private until you share them</div>
+                    <div class="tv-home-file"><span class="tv-home-file-icon tv-home-file-blue" aria-hidden="true">▤</span><span><strong>Private by default</strong><small>Your vault is visible only to you</small></span><span class="tv-home-file-more" aria-hidden="true">01</span></div>
+                    <div class="tv-home-file"><span class="tv-home-file-icon tv-home-file-purple" aria-hidden="true">♧</span><span><strong>Sharing you control</strong><small>Grant or revoke access anytime</small></span><span class="tv-home-file-more" aria-hidden="true">02</span></div>
+                    <div class="tv-home-file"><span class="tv-home-file-icon tv-home-file-green" aria-hidden="true">◷</span><span><strong>Activity you can review</strong><small>Keep track of document actions</small></span><span class="tv-home-file-more" aria-hidden="true">03</span></div>
+                    <div class="tv-home-vault-foot"><span aria-hidden="true">✓</span> Access is managed by your account permissions</div>
                 </div>
-                <div class="tv-home-float-badge"><span aria-hidden="true">✓</span><span><strong>Access protected</strong><small>You choose who can view</small></span></div>
+                <div class="tv-home-float-badge"><span aria-hidden="true">✓</span><span><strong>Access under your control</strong><small>Share only when you choose</small></span></div>
             </div>
         </section>
 
         <section class="tv-home-features" id="features">
             <div class="tv-home-section-heading">
-                <p class="tv-home-kicker">BUILT AROUND YOUR CONTROL</p>
-                <h2>Everything your files need.<br><span>Nothing you don’t.</span></h2>
-                <p>A straightforward space to organize documents and manage access with confidence.</p>
+                <p class="tv-home-kicker">SECURITY THAT SUPPORTS YOUR WORKFLOW</p>
+                <h2>Protect files without<br><span>losing control.</span></h2>
+                <p>Practical protections help you keep files private, manage access, and follow important activity.</p>
             </div>
             <div class="tv-home-feature-grid">
                 <article class="tv-home-feature-card">
                     <span class="tv-home-feature-icon tv-home-feature-blue" aria-hidden="true">▤</span>
                     <h3>Keep files organized</h3>
-                    <p>Store documents in your private library and find them with search, categories, and date filters.</p>
+                    <p>Uploads are checked for allowed file types and size before they are saved to your private library.</p>
                 </article>
                 <article class="tv-home-feature-card" id="security">
                     <span class="tv-home-feature-icon tv-home-feature-purple" aria-hidden="true">♧</span>
                     <h3>Choose who gets access</h3>
-                    <p>Grant view or edit permissions to other users, and revoke access when things change.</p>
+                    <p>Give active users only the access they need. Revoke document permissions from your library.</p>
                 </article>
                 <article class="tv-home-feature-card">
                     <span class="tv-home-feature-icon tv-home-feature-green" aria-hidden="true">◷</span>
                     <h3>Review document activity</h3>
-                    <p>Staff can review recent document and permission events in the audit dashboard.</p>
+                    <p>Review your own document activity. Staff can access the broader audit dashboard.</p>
                 </article>
             </div>
         </section>
 
         <section class="tv-home-bottom-cta">
             <div>
-                <p class="tv-home-kicker">YOUR PRIVATE WORKSPACE IS READY</p>
-                <h2>Take control of your documents.</h2>
-                <p>Create an account to start organizing and sharing on your terms.</p>
+                <p class="tv-home-kicker">YOUR DOCUMENTS, YOUR DECISIONS</p>
+                <h2>{% if user.is_authenticated %}Pick up where you left off.{% else %}Make room for more confident work.{% endif %}</h2>
+                <p>{% if user.is_authenticated %}Your files and recent activity are ready in your private vault.{% else %}Start with a private library and share access only when you choose.{% endif %}</p>
             </div>
-            <a class="tv-home-primary-cta" href="{% url 'register' %}">Create your account <span aria-hidden="true">→</span></a>
+            {% if user.is_authenticated %}
+                <a class="tv-home-primary-cta" href="{% url 'document_list' %}">Go to my vault <span aria-hidden="true">→</span></a>
+            {% else %}
+                <a class="tv-home-primary-cta" href="{% url 'register' %}">Create your account <span aria-hidden="true">→</span></a>
+            {% endif %}
         </section>
     </main>
 
     <footer class="tv-home-footer">
         <a class="tv-home-brand" href="{% url 'home' %}"><span class="tv-workspace-brand-mark" aria-hidden="true">T</span><span>TrustVault</span></a>
         <p>Secure document sharing and access management.</p>
-        <a href="{% url 'login' %}">Sign in</a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'document_list' %}">My vault</a>
+        {% else %}
+            <a href="{% url 'login' %}">Sign in</a>
+        {% endif %}
         <span>© 2026 TrustVault</span>
     </footer>
     <script src="{% static 'js/trustvault.js' %}"></script>

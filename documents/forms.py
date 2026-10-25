@@ -51,6 +51,15 @@ class DocumentUploadForm(forms.ModelForm):
             "description",
         ]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["file"].widget.attrs.update(
+            {
+                "accept": ".pdf,.txt,.docx,.png,.jpg,.jpeg",
+                "aria-label": "Choose a document to upload",
+            }
+        )
+
     def clean_title(self):
         title = self.cleaned_data.get("title", "").strip()
 

@@ -10,7 +10,8 @@
     display: grid;
     min-height: 100vh;
     place-items: center;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     margin: 0;
     padding: 50px 24px;
     background: var(--login-bg);

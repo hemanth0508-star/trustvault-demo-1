@@ -12,9 +12,16 @@
             <span class="tv-upload-brand-mark" aria-hidden="true">T</span>
             <span>TrustVault</span>
         </a>
-        <a class="tv-upload-back tv-previous-link" href="{% url 'document_list' %}" data-previous-button>
-            <span aria-hidden="true">&larr;</span> Previous
-        </a>
+        <nav class="tv-upload-header-actions" aria-label="Account navigation">
+            <a class="tv-upload-back tv-previous-link" href="{% url 'document_list' %}" data-previous-button>
+                <span aria-hidden="true">&larr;</span> Previous
+            </a>
+            <a class="tv-upload-back" href="{% url 'document_list' %}">My vault</a>
+            <form class="tv-logout-form" method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button class="tv-nav-logout" type="submit">Log out</button>
+            </form>
+        </nav>
     </header>
 
     <main class="tv-upload-main">

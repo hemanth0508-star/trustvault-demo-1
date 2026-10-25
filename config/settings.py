@@ -21,10 +21,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'dev-only-change-this-secret-key-before-deployment')
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DJANGO_DEBUG", "1") == "1"
+
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
+if not SECRET_KEY:
+    if not DEBUG:
+        raise RuntimeError(
+            "DJANGO_SECRET_KEY is required when DJANGO_DEBUG=0."
+        )
+    SECRET_KEY = "dev-only-change-this-secret-key-before-deployment"
 
 ALLOWED_HOSTS = [
     host.strip()
@@ -99,7 +105,9 @@ if DATABASE_URL:
             DATABASE_URL,
             conn_max_age=60,
             conn_health_checks=True,
-            ssl_require=True,
+            ssl_require=DATABASE_URL.startswith(
+                ("postgres://", "postgresql://")
+            ),
         )
     }
 else:
@@ -168,6 +176,9 @@ MEDIA_ROOT = BASE_DIR / "private_uploads"
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "document_list"
 LOGOUT_REDIRECT_URL = "login"
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_SAMESITE = "Lax"
 # Production deployments must set DJANGO_DEBUG=0, DJANGO_SECRET_KEY, and DJANGO_ALLOWED_HOSTS.
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
@@ -175,5 +186,9 @@ if not DEBUG:
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = int(os.environ.get("DJANGO_HSTS_SECONDS", "31536000"))
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = (
+        os.environ.get("DJANGO_HSTS_INCLUDE_SUBDOMAINS", "0") == "1"
+    )
     SECURE_REFERRER_POLICY = "same-origin"
     X_FRAME_OPTIONS = "DENY"

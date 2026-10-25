@@ -1,8 +1,9 @@
 import logging
 
-from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
+from documents.permissions import annotate_document_read_access
 from .models import AuditEvent
 
 
@@ -45,10 +46,10 @@ def record_audit_event(
     )
 
 
-@staff_member_required
+@login_required
 def audit_dashboard(request):
     """
-    Display recent audit events to staff members.
+    Display staff audit events or the signed-in user's own activity.
     """
     events = AuditEvent.objects.select_related(
         "actor",
@@ -56,7 +57,14 @@ def audit_dashboard(request):
     ).order_by("-timestamp")
 
     event_type = request.GET.get("event_type", "").strip()
-    username = request.GET.get("username", "").strip()
+    is_staff = request.user.is_staff
+    username = request.GET.get("username", "").strip() if is_staff else ""
+
+    if not is_staff:
+        events = annotate_document_read_access(
+            events.filter(actor=request.user),
+            request.user,
+        )
 
     allowed_types = {
         choice[0]
@@ -79,5 +87,6 @@ def audit_dashboard(request):
             "event_choices": AuditEvent.EVENT_CHOICES,
             "selected_event_type": event_type,
             "username_query": username,
+            "is_staff": is_staff,
         },
     )

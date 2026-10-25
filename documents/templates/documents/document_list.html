@@ -1,199 +1,300 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#070d1c">
     <title>TrustVault | My Documents</title>
-    {% load static %}<link rel="stylesheet" href="{% static 'css/trustvault.css' %}">
+    <link rel="stylesheet" href="{% static 'css/trustvault.css' %}">
 </head>
 <body class="tv-content-page tv-dashboard-page">
-    <header class="tv-workspace-header">
-        <a class="tv-workspace-brand" href="{% url 'document_list' %}" aria-label="TrustVault home">
-            <span class="tv-workspace-brand-mark" aria-hidden="true">T</span>
-            <span><strong>TrustVault</strong><small>SECURE DOCUMENT WORKSPACE</small></span>
-        </a>
-        <nav class="tv-workspace-nav" aria-label="Account navigation">
-            <a class="tv-nav-link tv-previous-link" href="{% url 'home' %}" data-previous-button>← Previous</a>
-            <span class="tv-workspace-greeting">Welcome, <strong>{{ user.username }}</strong></span>
-            {% if user.is_staff %}
-                <a class="tv-nav-link" href="{% url 'audit_dashboard' %}">Audit activity</a>
-            {% endif %}
-            <a class="tv-nav-logout" href="{% url 'logout' %}">Log out</a>
-        </nav>
-    </header>
-
-    <main class="tv-workspace-main">
-        <section class="tv-dashboard-hero">
-            <div>
-                <p class="tv-workspace-eyebrow">YOUR PRIVATE WORKSPACE</p>
-                <h1>Good to see you, {{ user.username }}</h1>
-                <p>Keep your important files organized, protected, and ready when you need them.</p>
-            </div>
-            <a class="tv-dashboard-upload-cta" href="{% url 'document_upload' %}">
-                <span aria-hidden="true">+</span> Upload a document
+    <div class="tv-dashboard-shell">
+        <aside class="tv-dashboard-sidebar">
+            <a class="tv-dashboard-logo" href="{% url 'document_list' %}" aria-label="TrustVault dashboard">
+                <span class="tv-workspace-brand-mark" aria-hidden="true">T</span>
+                <span>Trust<span>Vault</span></span>
             </a>
-        </section>
-
-        <section class="tv-dashboard-stats" aria-label="Document overview">
-            <article class="tv-dashboard-stat">
-                <span class="tv-stat-icon tv-stat-icon-blue" aria-hidden="true">▤</span>
-                <div><strong>{{ documents|length }}</strong><span>Documents you own</span></div>
-            </article>
-            <article class="tv-dashboard-stat">
-                <span class="tv-stat-icon tv-stat-icon-violet" aria-hidden="true">⇧</span>
-                <div><strong>{{ shared_documents|length }}</strong><span>Shared with you</span></div>
-            </article>
-            <article class="tv-dashboard-stat tv-dashboard-stat-private">
-                <span class="tv-stat-icon tv-stat-icon-green" aria-hidden="true">✓</span>
-                <div><strong>Private</strong><span>Your files are private by default</span></div>
-            </article>
-        </section>
-
-        <section class="tv-filter-card" aria-labelledby="filter-title">
-            <div class="tv-filter-heading">
-                <div>
-                    <p class="tv-workspace-eyebrow">FIND A FILE</p>
-                    <h2 id="filter-title">Search your vault</h2>
-                </div>
-                <span class="tv-filter-lock" aria-label="Private search">⌕</span>
+            <nav class="tv-dashboard-side-nav" aria-label="Vault navigation">
+                <a class="is-active" href="{% url 'document_list' %}" aria-current="page"><span aria-hidden="true">⌂</span> Dashboard</a>
+                <a href="#my-documents"><span aria-hidden="true">▤</span> My documents</a>
+                <a href="#shared-documents"><span aria-hidden="true">♧</span> Shared with me</a>
+                <a href="{% url 'document_upload' %}"><span aria-hidden="true">↑</span> Upload document</a>
+                <a href="{% url 'audit_dashboard' %}"><span aria-hidden="true">◷</span> {% if user.is_staff %}Audit activity{% else %}My activity{% endif %}</a>
+            </nav>
+            <div class="tv-dashboard-sidebar-note">
+                <span class="tv-dashboard-sidebar-shield" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/>
+                        <path d="m9 12 2 2 4-4"/>
+                    </svg>
+                </span>
+                <strong>Your vault, your rules</strong>
+                <span>Only share a document when you choose.</span>
             </div>
-            <form method="get" action="{% url 'document_list' %}" class="tv-filter-form">
-                <label class="tv-filter-field tv-filter-search">
-                    <span>Title or description</span>
-                    <input type="search" name="q" placeholder="Search documents..." value="{{ search_query }}" aria-label="Search documents">
-                </label>
-                <label class="tv-filter-field">
-                    <span>Owner</span>
-                    <input type="text" name="owner" placeholder="Username" value="{{ owner_query }}" aria-label="Filter by owner username">
-                </label>
-                <label class="tv-filter-field">
-                    <span>Category</span>
-                    <select name="category" aria-label="Filter by category">
-                        <option value="">All categories</option>
-                        {% for value, label in category_choices %}
-                            <option value="{{ value }}" {% if category_query == value %}selected{% endif %}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-                <label class="tv-filter-field">
-                    <span>Uploaded from</span>
-                    <input type="date" name="date_from" value="{{ date_from }}" aria-label="Uploaded from date">
-                </label>
-                <label class="tv-filter-field">
-                    <span>Uploaded to</span>
-                    <input type="date" name="date_to" value="{{ date_to }}" aria-label="Uploaded to date">
-                </label>
-                <div class="tv-filter-actions">
-                    <button class="tv-filter-submit" type="submit">Search documents</button>
-                    <a class="tv-filter-clear" href="{% url 'document_list' %}">Clear filters</a>
-                </div>
-            </form>
-        </section>
+            <span class="tv-dashboard-sidebar-foot">TRUSTVAULT · PRIVATE WORKSPACE</span>
+        </aside>
 
-        <section class="tv-document-section" aria-labelledby="owned-documents-title">
-            <div class="tv-section-heading">
-                <div>
-                    <p class="tv-workspace-eyebrow">MANAGED BY YOU</p>
-                    <h2 id="owned-documents-title">Documents I own <span>{{ documents|length }}</span></h2>
+        <div class="tv-dashboard-content">
+            <header class="tv-dashboard-topbar">
+                <form class="tv-dashboard-top-search" method="get" action="{% url 'document_list' %}" role="search">
+                    <label for="dashboard-search" class="tv-sr-only">Search documents</label>
+                    <span aria-hidden="true">⌕</span>
+                    <input id="dashboard-search" type="search" name="q" value="{{ search_query }}" placeholder="Search your documents">
+                </form>
+                <div class="tv-dashboard-account">
+                    <a class="tv-dashboard-previous tv-previous-link" href="{% url 'home' %}" data-previous-button>← Previous</a>
+                    <span class="tv-dashboard-avatar" aria-hidden="true">{{ user.username|first|upper }}</span>
+                    <span class="tv-dashboard-account-name"><strong>{{ user.username }}</strong><small>{% if user.is_staff %}Staff account{% else %}Private vault{% endif %}</small></span>
+                    <form class="tv-logout-form" method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button class="tv-nav-logout" type="submit">Log out</button>
+                    </form>
                 </div>
-            </div>
+            </header>
 
-            {% if documents %}
-                <div class="tv-document-grid">
-                    {% for document in documents %}
-                        <article class="tv-document-card">
-                            <div class="tv-document-card-top">
-                                <span class="tv-document-icon" aria-hidden="true">▤</span>
-                                <span class="tv-document-category">{{ document.get_category_display }}</span>
+            <main class="tv-dashboard-main">
+                <section class="tv-dashboard-welcome" id="dashboard">
+                    <div class="tv-dashboard-welcome-copy">
+                        <p class="tv-workspace-eyebrow">YOUR TRUSTVAULT</p>
+                        <h1>Secure your important documents.</h1>
+                        <p>Store and manage files in your private vault. You control who can access what you share.</p>
+                        <div class="tv-dashboard-welcome-actions">
+                            <a class="tv-dashboard-upload-cta" href="{% url 'document_upload' %}"><span aria-hidden="true">↑</span> Upload document</a>
+                            <a class="tv-dashboard-learn-link" href="#security-info">How your vault works <span aria-hidden="true">→</span></a>
+                        </div>
+                    </div>
+                    <div class="tv-dashboard-security-art" aria-label="Private document access is protected by account permissions">
+                        <div class="tv-dashboard-security-orbit"></div>
+                        <div class="tv-dashboard-security-shield" aria-hidden="true">
+                            <svg viewBox="0 0 80 90" fill="none">
+                                <path d="M40 5 70 17v22c0 20-12 35-30 45C22 74 10 59 10 39V17L40 5Z" stroke="currentColor" stroke-width="2"/>
+                                <rect x="28" y="37" width="24" height="20" rx="5" stroke="currentColor" stroke-width="2"/>
+                                <path d="M33 37v-5a7 7 0 0 1 14 0v5m-7 8v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <span class="tv-dashboard-security-chip tv-dashboard-chip-one"><b aria-hidden="true">✓</b> Private by default</span>
+                        <span class="tv-dashboard-security-chip tv-dashboard-chip-two"><b aria-hidden="true">✓</b> Access you control</span>
+                    </div>
+                </section>
+
+                <section class="tv-dashboard-stats" aria-label="Vault overview">
+                    <article class="tv-dashboard-stat">
+                        <span class="tv-stat-icon tv-stat-icon-blue" aria-hidden="true">▤</span>
+                        <div><strong>{{ owned_document_count }}</strong><span>My documents</span></div>
+                    </article>
+                    <article class="tv-dashboard-stat">
+                        <span class="tv-stat-icon tv-stat-icon-violet" aria-hidden="true">♧</span>
+                        <div><strong>{{ shared_document_count }}</strong><span>Shared with me</span></div>
+                    </article>
+                    <article class="tv-dashboard-stat">
+                        <span class="tv-stat-icon tv-stat-icon-green" aria-hidden="true">↗</span>
+                        <div><strong>{{ shares_granted_count }}</strong><span>Shares I granted</span></div>
+                    </article>
+                    <article class="tv-dashboard-stat">
+                        <span class="tv-stat-icon tv-stat-icon-amber" aria-hidden="true">◷</span>
+                        <div><strong>{{ activity_event_count }}</strong><span>My activity events</span></div>
+                    </article>
+                </section>
+
+                <div class="tv-dashboard-workspace">
+                    <div class="tv-dashboard-primary-column">
+                        <section class="tv-filter-card tv-dashboard-filter" aria-labelledby="filter-title">
+                            <div class="tv-filter-heading">
+                                <div>
+                                    <p class="tv-workspace-eyebrow">FIND A FILE</p>
+                                    <h2 id="filter-title">Search your vault</h2>
+                                </div>
+                                <span class="tv-filter-lock" aria-hidden="true">⌕</span>
                             </div>
-                            <h3>{{ document.title }}</h3>
-                            <p class="tv-document-description">{% if document.description %}{{ document.description }}{% else %}No description provided.{% endif %}</p>
-                            <div class="tv-document-meta">
-                                <span>Uploaded</span>
-                                <time datetime="{{ document.created_at|date:'c' }}">{{ document.created_at|date:"d M Y, H:i" }}</time>
+                            <form method="get" action="{% url 'document_list' %}" class="tv-filter-form">
+                                <label class="tv-filter-field tv-filter-search">
+                                    <span>Title or description</span>
+                                    <input type="search" name="q" placeholder="Search documents..." value="{{ search_query }}">
+                                </label>
+                                <label class="tv-filter-field">
+                                    <span>Owner</span>
+                                    <input type="text" name="owner" placeholder="Username" value="{{ owner_query }}">
+                                </label>
+                                <label class="tv-filter-field">
+                                    <span>Category</span>
+                                    <select name="category">
+                                        <option value="">All categories</option>
+                                        {% for value, label in category_choices %}
+                                            <option value="{{ value }}" {% if category_query == value %}selected{% endif %}>{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </label>
+                                <label class="tv-filter-field">
+                                    <span>Uploaded from</span>
+                                    <input type="date" name="date_from" value="{{ date_from }}">
+                                </label>
+                                <label class="tv-filter-field">
+                                    <span>Uploaded to</span>
+                                    <input type="date" name="date_to" value="{{ date_to }}">
+                                </label>
+                                <div class="tv-filter-actions">
+                                    <button class="tv-filter-submit" type="submit">Apply filters</button>
+                                    <a class="tv-filter-clear" href="{% url 'document_list' %}">Clear filters</a>
+                                </div>
+                            </form>
+                        </section>
+
+                        <section class="tv-document-section tv-dashboard-document-section" id="my-documents" aria-labelledby="owned-documents-title">
+                            <div class="tv-section-heading">
+                                <div>
+                                    <p class="tv-workspace-eyebrow">MANAGED BY YOU</p>
+                                    <h2 id="owned-documents-title">Recent documents <span>{{ documents|length }}</span></h2>
+                                </div>
+                                <a class="tv-dashboard-view-all" href="#my-documents">View all <span aria-hidden="true">→</span></a>
                             </div>
-                            <div class="tv-document-actions">
-                                <a class="tv-action-button tv-action-primary" href="{% url 'document_download' document.id %}">Download</a>
-                                <a class="tv-action-button tv-action-secondary" href="{% url 'document_edit' document.id %}">Edit</a>
-                                <a class="tv-action-button tv-action-secondary" href="{% url 'document_share' document.id %}">Share</a>
-                                <form method="post" action="{% url 'document_delete' document.id %}" onsubmit="return confirm('Are you sure you want to delete this document?');">
-                                    {% csrf_token %}
-                                    <button class="tv-action-button tv-action-danger" type="submit">Delete</button>
-                                </form>
+
+                            {% if documents %}
+                                <div class="tv-dashboard-table-wrap">
+                                    <table class="tv-dashboard-table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Document</th>
+                                                <th scope="col">Category</th>
+                                                <th scope="col">Uploaded</th>
+                                                <th scope="col">Shared with</th>
+                                                <th scope="col">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for document in documents %}
+                                                <tr>
+                                                    <td data-label="Document">
+                                                        <span class="tv-dashboard-file-icon" aria-hidden="true">▤</span>
+                                                        <span class="tv-dashboard-file-info"><strong>{{ document.title }}</strong><small>{% if document.description %}{{ document.description }}{% else %}No description provided{% endif %}</small></span>
+                                                    </td>
+                                                    <td data-label="Category"><span class="tv-document-category">{{ document.get_category_display }}</span></td>
+                                                    <td data-label="Uploaded"><time datetime="{{ document.created_at|date:'c' }}">{{ document.created_at|date:"d M Y" }}</time></td>
+                                                    <td data-label="Shared with"><span class="tv-dashboard-share-count">{{ document.permissions.all|length }} people</span></td>
+                                                    <td data-label="Actions">
+                                                        <div class="tv-document-actions">
+                                                            <a class="tv-action-button tv-action-primary" href="{% url 'document_download' document.id %}" aria-label="Download {{ document.title }}">Download</a>
+                                                            <a class="tv-action-button tv-action-secondary" href="{% url 'document_edit' document.id %}" aria-label="Edit {{ document.title }}">Edit</a>
+                                                            <a class="tv-action-button tv-action-secondary" href="{% url 'document_share' document.id %}" aria-label="Share {{ document.title }}">Share</a>
+                                                            <form method="post" action="{% url 'document_delete' document.id %}" onsubmit="return confirm('Are you sure you want to delete this document?');">
+                                                                {% csrf_token %}
+                                                                <button class="tv-action-button tv-action-danger" type="submit" aria-label="Delete {{ document.title }}">Delete</button>
+                                                            </form>
+                                                        </div>
+                                                        <details class="tv-access-details">
+                                                            <summary>Manage access</summary>
+                                                            <div class="tv-access-list">
+                                                                {% for permission in document.permissions.all %}
+                                                                    <div class="tv-access-item">
+                                                                        <div>
+                                                                            <strong>{{ permission.user.username }}</strong>
+                                                                            <p>View/download: {% if permission.can_read %}Yes{% else %}No{% endif %} <span aria-hidden="true">·</span> Edit: {% if permission.can_edit %}Yes{% else %}No{% endif %}</p>
+                                                                        </div>
+                                                                        <form method="post" action="{% url 'document_revoke' document.id permission.user.id %}">
+                                                                            {% csrf_token %}
+                                                                            <button class="tv-revoke-button" type="submit">Revoke access</button>
+                                                                        </form>
+                                                                    </div>
+                                                                {% empty %}
+                                                                    <p class="tv-no-access">This document has not been shared with anyone.</p>
+                                                                {% endfor %}
+                                                            </div>
+                                                        </details>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <div class="tv-dashboard-empty">
+                                    <span class="tv-empty-icon" aria-hidden="true">▤</span>
+                                    <h3>No documents found</h3>
+                                    <p>No documents match your search or filters. Try adjusting them, or add a file to get started.</p>
+                                    <a class="tv-dashboard-upload-cta" href="{% url 'document_upload' %}">Upload a document</a>
+                                </div>
+                            {% endif %}
+                        </section>
+
+                        <section class="tv-document-section tv-shared-section" id="shared-documents" aria-labelledby="shared-documents-title">
+                            <div class="tv-section-heading">
+                                <div>
+                                    <p class="tv-workspace-eyebrow">SHARED ACCESS</p>
+                                    <h2 id="shared-documents-title">Documents shared with me <span>{{ shared_documents|length }}</span></h2>
+                                </div>
                             </div>
-                            <details class="tv-access-details">
-                                <summary>Manage access</summary>
-                                <div class="tv-access-list">
-                                    {% for permission in document.permissions.all %}
-                                        <div class="tv-access-item">
-                                            <div>
-                                                <strong>{{ permission.user.username }}</strong>
-                                                <p>View/download: {% if permission.can_read %}Yes{% else %}No{% endif %} <span aria-hidden="true">·</span> Edit: {% if permission.can_edit %}Yes{% else %}No{% endif %}</p>
+                            {% if shared_documents %}
+                                <div class="tv-document-grid">
+                                    {% for document in shared_documents %}
+                                        <article class="tv-document-card tv-shared-document-card">
+                                            <div class="tv-document-card-top">
+                                                <span class="tv-document-icon tv-document-icon-shared" aria-hidden="true">⇧</span>
+                                                <span class="tv-document-category">{{ document.get_category_display }}</span>
                                             </div>
-                                            <form method="post" action="{% url 'document_revoke' document.id permission.user.id %}">
-                                                {% csrf_token %}
-                                                <button class="tv-revoke-button" type="submit">Revoke access</button>
-                                            </form>
-                                        </div>
-                                    {% empty %}
-                                        <p class="tv-no-access">This document has not been shared with anyone.</p>
+                                            <h3>{{ document.title }}</h3>
+                                            <p class="tv-document-description">{% if document.description %}{{ document.description }}{% else %}No description provided.{% endif %}</p>
+                                            <div class="tv-document-meta"><span>Shared by</span><strong>{{ document.owner.username }}</strong></div>
+                                            <div class="tv-document-meta"><span>Uploaded</span><time datetime="{{ document.created_at|date:'c' }}">{{ document.created_at|date:"d M Y, H:i" }}</time></div>
+                                            <div class="tv-document-actions">
+                                                <a class="tv-action-button tv-action-primary" href="{% url 'document_download' document.id %}">Download</a>
+                                            </div>
+                                        </article>
                                     {% endfor %}
                                 </div>
-                            </details>
-                        </article>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="tv-dashboard-empty">
-                    <span class="tv-empty-icon" aria-hidden="true">▤</span>
-                    <h3>No documents found</h3>
-                    <p>No documents match your search or filters. Try adjusting your search, or add a file to get started.</p>
-                    <a class="tv-dashboard-upload-cta" href="{% url 'document_upload' %}">Upload your first document</a>
-                </div>
-            {% endif %}
-        </section>
+                            {% else %}
+                                <div class="tv-dashboard-empty tv-dashboard-empty-compact">
+                                    <h3>Nothing shared with you yet</h3>
+                                    <p>When another user shares a document with you, it will appear here.</p>
+                                </div>
+                            {% endif %}
+                        </section>
+                    </div>
 
-        <section class="tv-document-section tv-shared-section" aria-labelledby="shared-documents-title">
-            <div class="tv-section-heading">
-                <div>
-                    <p class="tv-workspace-eyebrow">SHARED ACCESS</p>
-                    <h2 id="shared-documents-title">Documents shared with me <span>{{ shared_documents|length }}</span></h2>
-                </div>
-            </div>
-            {% if shared_documents %}
-                <div class="tv-document-grid">
-                    {% for document in shared_documents %}
-                        <article class="tv-document-card tv-shared-document-card">
-                            <div class="tv-document-card-top">
-                                <span class="tv-document-icon tv-document-icon-shared" aria-hidden="true">⇧</span>
-                                <span class="tv-document-category">{{ document.get_category_display }}</span>
+                    <aside class="tv-dashboard-right-column">
+                        <section class="tv-dashboard-side-card" id="security-info" aria-labelledby="vault-status-title">
+                            <div class="tv-dashboard-side-heading">
+                                <h2 id="vault-status-title">Vault status</h2>
+                                <span aria-hidden="true">•••</span>
                             </div>
-                            <h3>{{ document.title }}</h3>
-                            <p class="tv-document-description">{% if document.description %}{{ document.description }}{% else %}No description provided.{% endif %}</p>
-                            <div class="tv-document-meta">
-                                <span>Shared by</span>
-                                <strong>{{ document.owner.username }}</strong>
+                            <div class="tv-dashboard-vault-status">
+                                <span aria-hidden="true">✓</span>
+                                <div><strong>Private access</strong><small>Document access follows your account permissions.</small></div>
                             </div>
-                            <div class="tv-document-meta">
-                                <span>Uploaded</span>
-                                <time datetime="{{ document.created_at|date:'c' }}">{{ document.created_at|date:"d M Y, H:i" }}</time>
+                            <div class="tv-dashboard-status-stats">
+                                <div><span>Owned files</span><strong>{{ owned_document_count }}</strong></div>
+                                <div><span>Shared with you</span><strong>{{ shared_document_count }}</strong></div>
+                                <div><span>People you've shared with</span><strong>{{ shares_granted_count }}</strong></div>
                             </div>
-                            <div class="tv-document-actions">
-                                <a class="tv-action-button tv-action-primary" href="{% url 'document_download' document.id %}">Download</a>
-                            </div>
-                        </article>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="tv-dashboard-empty tv-dashboard-empty-compact">
-                    <h3>Nothing shared with you yet</h3>
-                    <p>When someone shares a document with you, it will appear here.</p>
-                </div>
-            {% endif %}
-        </section>
-    </main>
+                            <p class="tv-dashboard-security-note">Only upload files you have the right to store. Review permissions and revoke access when it is no longer needed.</p>
+                        </section>
 
-    <footer class="tv-workspace-footer">TrustVault <span aria-hidden="true">·</span> Secure document sharing</footer>
+                        <section class="tv-dashboard-side-card" aria-labelledby="quick-actions-title">
+                            <div class="tv-dashboard-side-heading"><h2 id="quick-actions-title">Quick actions</h2></div>
+                            <a class="tv-dashboard-quick-action tv-dashboard-quick-primary" href="{% url 'document_upload' %}"><span aria-hidden="true">↑</span> Upload document <b aria-hidden="true">›</b></a>
+                            <a class="tv-dashboard-quick-action" href="#shared-documents"><span aria-hidden="true">▤</span> Browse shared files <b aria-hidden="true">›</b></a>
+                            <a class="tv-dashboard-quick-action" href="{% url 'audit_dashboard' %}"><span aria-hidden="true">◷</span> {% if user.is_staff %}Review audit activity{% else %}Review my activity{% endif %}<b aria-hidden="true">›</b></a>
+                        </section>
+
+                        <section class="tv-dashboard-side-card tv-dashboard-activity-card" aria-labelledby="recent-activity-title">
+                            <div class="tv-dashboard-side-heading">
+                                <h2 id="recent-activity-title">My recent activity</h2>
+                                <a href="{% url 'audit_dashboard' %}">View all <span aria-hidden="true">→</span></a>
+                            </div>
+                            {% for event in recent_activity %}
+                                <div class="tv-dashboard-activity-item">
+                                    <span class="tv-dashboard-activity-icon" aria-hidden="true">{% if event.success %}✓{% else %}!{% endif %}</span>
+                                    <span><strong>{{ event.get_event_type_display }}</strong><small>{% if event.document and event.document_is_readable %}{{ event.document.title }}{% else %}Document unavailable{% endif %} · {{ event.timestamp|timesince }} ago</small></span>
+                                </div>
+                            {% empty %}
+                                <p class="tv-dashboard-no-activity">Your document activity will appear here.</p>
+                            {% endfor %}
+                        </section>
+                    </aside>
+                </div>
+            </main>
+            <footer class="tv-workspace-footer">TrustVault <span aria-hidden="true">·</span> Secure document sharing</footer>
+        </div>
+    </div>
     <script src="{% static 'js/trustvault.js' %}"></script>
 </body>
 </html>

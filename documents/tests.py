@@ -99,6 +99,66 @@ class TrustVaultSecurityTests(TestCase):
                 if file_name and storage.exists(file_name):
                     storage.delete(file_name)
 
+    def test_dashboard_shows_only_the_signed_in_users_activity(self):
+        own_event = AuditEvent.objects.create(
+            actor=self.owner,
+            document=self.document,
+            event_type="UPLOAD",
+            details={"document_title": "Confidential Test Document"},
+        )
+        AuditEvent.objects.create(
+            actor=self.viewer,
+            event_type="UPLOAD",
+            details={"document_title": "Another users private document"},
+        )
+        self.client.force_login(self.owner)
+
+        response = self.client.get(reverse("document_list"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["owned_document_count"], 1)
+        self.assertEqual(response.context["activity_event_count"], 1)
+        self.assertEqual(
+            list(response.context["recent_activity"]),
+            [own_event],
+        )
+        self.assertNotContains(response, "Another users private document")
+
+    def test_dashboard_hides_titles_for_documents_the_user_cannot_read(self):
+        AuditEvent.objects.create(
+            actor=self.viewer,
+            document=self.document,
+            event_type="ACCESS_DENIED",
+            success=False,
+            details={"action": "download"},
+        )
+        self.client.force_login(self.viewer)
+
+        response = self.client.get(reverse("document_list"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, "Confidential Test Document")
+        self.assertContains(response, "Document unavailable")
+
+    def test_dashboard_shows_titles_for_documents_shared_with_the_user(self):
+        DocumentPermission.objects.create(
+            document=self.document,
+            user=self.viewer,
+            can_read=True,
+            granted_by=self.owner,
+        )
+        AuditEvent.objects.create(
+            actor=self.viewer,
+            document=self.document,
+            event_type="DOWNLOAD",
+        )
+        self.client.force_login(self.viewer)
+
+        response = self.client.get(reverse("document_list"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.document.title)
+
     # --------------------------------------------------
     # DOWNLOAD AND AUTHORIZATION TESTS
     # --------------------------------------------------

@@ -15,7 +15,10 @@
         <nav class="tv-workspace-nav" aria-label="Account navigation">
             <a class="tv-nav-link tv-previous-link" href="{% url 'document_list' %}" data-previous-button>← Previous</a>
             <a class="tv-nav-link" href="{% url 'document_list' %}">My documents</a>
-            <a class="tv-nav-logout" href="{% url 'logout' %}">Log out</a>
+            <form class="tv-logout-form" method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button class="tv-nav-logout" type="submit">Log out</button>
+            </form>
         </nav>
     </header>
 
@@ -58,10 +61,12 @@
                         {% endfor %}
                     </select>
                 </label>
-                <label class="tv-filter-field">
-                    <span>Username</span>
-                    <input type="text" id="username" name="username" value="{{ username_query }}" placeholder="Search username">
-                </label>
+                {% if is_staff %}
+                    <label class="tv-filter-field">
+                        <span>Username</span>
+                        <input type="text" id="username" name="username" value="{{ username_query }}" placeholder="Search username">
+                    </label>
+                {% endif %}
                 <div class="tv-audit-filter-actions">
                     <button class="tv-filter-submit" type="submit">Apply filters</button>
                     <a class="tv-filter-clear" href="{% url 'audit_dashboard' %}">Reset</a>
@@ -83,7 +88,7 @@
                         <tr>
                             <th scope="col">Timestamp</th>
                             <th scope="col">Event</th>
-                            <th scope="col">Actor</th>
+                            {% if is_staff %}<th scope="col">Actor</th>{% endif %}
                             <th scope="col">Document</th>
                             <th scope="col">Result</th>
                             <th scope="col">IP address</th>
@@ -95,8 +100,14 @@
                             <tr>
                                 <td><time datetime="{{ event.timestamp|date:'c' }}">{{ event.timestamp|date:"d M Y, H:i:s" }}</time></td>
                                 <td><span class="tv-audit-event">{{ event.get_event_type_display }}</span></td>
-                                <td>{% if event.actor %}{{ event.actor.username }}{% else %}<span class="tv-audit-muted">Unknown</span>{% endif %}</td>
-                                <td>{% if event.document %}{{ event.document.title }}{% else %}<span class="tv-audit-muted">Unavailable</span>{% endif %}</td>
+                                {% if is_staff %}<td>{% if event.actor %}{{ event.actor.username }}{% else %}<span class="tv-audit-muted">Unknown</span>{% endif %}</td>{% endif %}
+                                <td>
+                                    {% if is_staff %}
+                                        {% if event.document %}{{ event.document.title }}{% else %}<span class="tv-audit-muted">Unavailable</span>{% endif %}
+                                    {% else %}
+                                        {% if event.document and event.document_is_readable %}{{ event.document.title }}{% else %}<span class="tv-audit-muted">Unavailable</span>{% endif %}
+                                    {% endif %}
+                                </td>
                                 <td>
                                     {% if event.success %}
                                         <span class="tv-audit-result tv-audit-result-success"><span aria-hidden="true"></span>Success</span>
@@ -109,7 +120,7 @@
                             </tr>
                         {% empty %}
                             <tr>
-                                <td class="tv-audit-empty" colspan="7">
+                                <td class="tv-audit-empty" colspan="{% if is_staff %}7{% else %}6{% endif %}">
                                     <strong>No audit events found</strong>
                                     <span>Try changing or clearing your filters to see more results.</span>
                                 </td>
@@ -121,7 +132,7 @@
             <p class="tv-audit-note">Showing up to 200 recent events. Timestamps are displayed in the configured server timezone.</p>
         </section>
     </main>
-    <footer class="tv-workspace-footer">TrustVault <span aria-hidden="true">·</span> Security audit dashboard</footer>
+    <footer class="tv-workspace-footer">TrustVault <span aria-hidden="true">·</span> {% if is_staff %}Security audit dashboard{% else %}Your activity{% endif %}</footer>
     <script src="{% static 'js/trustvault.js' %}"></script>
 </body>
 </html>
