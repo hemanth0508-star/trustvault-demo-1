@@ -1,0 +1,529 @@
+.tv-login-page {
+    --login-bg: #080d1b;
+    --login-card: rgba(17, 27, 49, .9);
+    --login-blue: #38bdf8;
+    --login-purple: #818cf8;
+    --login-text: #f1f5f9;
+    --login-muted: #94a3b8;
+    --login-border: rgba(148, 163, 184, .16);
+    position: relative;
+    display: grid;
+    min-height: 100vh;
+    place-items: center;
+    overflow: hidden;
+    margin: 0;
+    padding: 50px 24px;
+    background: var(--login-bg);
+    color: var(--login-text);
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+}
+
+.tv-login-page *,
+.tv-login-page *::before,
+.tv-login-page *::after {
+    box-sizing: border-box;
+}
+
+.tv-login-glow {
+    position: fixed;
+    z-index: 0;
+    width: 460px;
+    height: 460px;
+    border-radius: 50%;
+    filter: blur(110px);
+    opacity: .16;
+    pointer-events: none;
+    animation: tvLoginGlow 9s ease-in-out infinite alternate;
+}
+
+.tv-login-glow-one {
+    top: -180px;
+    left: -150px;
+    background: #2563eb;
+}
+
+.tv-login-glow-two {
+    right: -180px;
+    bottom: -180px;
+    background: #7c3aed;
+    animation-delay: -4s;
+}
+
+.tv-login-grid {
+    position: fixed;
+    z-index: 0;
+    inset: 0;
+    opacity: .15;
+    pointer-events: none;
+    background-image: linear-gradient(rgba(56,189,248,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,.08) 1px,transparent 1px);
+    background-size: 48px 48px;
+    mask-image: linear-gradient(to bottom,#000,transparent 90%);
+}
+
+.tv-login-layout {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 420px;
+    align-items: center;
+    gap: clamp(36px, 7vw, 70px);
+    width: min(100%, 1020px);
+}
+
+.tv-login-brand {
+    padding: 20px 0;
+    animation: tvLoginFadeIn .8s ease both;
+}
+
+.tv-login-brand-lockup {
+    display: inline-flex;
+    align-items: center;
+    gap: 13px;
+    margin-bottom: 65px;
+    color: var(--login-text);
+    text-decoration: none;
+}
+
+.tv-login-brand-icon {
+    display: grid;
+    width: 49px;
+    height: 49px;
+    place-items: center;
+    border-radius: 15px;
+    background: linear-gradient(135deg,#0ea5e9,#6366f1);
+    box-shadow: 0 0 30px rgba(56,189,248,.24);
+}
+
+.tv-login-brand-icon svg {
+    width: 27px;
+    height: 27px;
+}
+
+.tv-login-brand-name {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.tv-login-brand-name span {
+    color: var(--login-blue);
+}
+
+.tv-login-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 24px;
+    padding: 9px 13px;
+    border: 1px solid rgba(56,189,248,.22);
+    border-radius: 30px;
+    background: rgba(56,189,248,.06);
+    color: #7dd3fc;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+}
+
+.tv-login-eyebrow span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #34d399;
+    box-shadow: 0 0 12px #34d399;
+}
+
+.tv-login-brand h1 {
+    margin: 0 0 23px;
+    font-size: clamp(38px,5vw,58px);
+    font-weight: 800;
+    line-height: 1.13;
+    letter-spacing: -2.7px;
+}
+
+.tv-login-brand h1 span {
+    display: block;
+    background: linear-gradient(90deg,#38bdf8,#818cf8);
+    background-clip: text;
+    color: transparent;
+}
+
+.tv-login-description {
+    max-width: 430px;
+    margin: 0;
+    color: var(--login-muted);
+    font-size: 14px;
+    line-height: 1.9;
+}
+
+.tv-login-features {
+    display: grid;
+    gap: 18px;
+    margin: 36px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tv-login-features li {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    color: #cbd5e1;
+    font-size: 13px;
+}
+
+.tv-login-feature-icon {
+    display: grid;
+    width: 35px;
+    height: 35px;
+    flex: none;
+    place-items: center;
+    border: 1px solid var(--login-border);
+    border-radius: 11px;
+    background: rgba(30,41,59,.55);
+    color: var(--login-blue);
+}
+
+.tv-login-feature-icon svg {
+    width: 17px;
+    height: 17px;
+}
+
+.tv-login-card {
+    width: 100%;
+    padding: 35px 31px;
+    border: 1px solid rgba(148,163,184,.18);
+    border-radius: 23px;
+    background: var(--login-card);
+    box-shadow: 0 30px 90px rgba(0,0,0,.32),inset 0 1px rgba(255,255,255,.04);
+    backdrop-filter: blur(22px);
+    animation: tvLoginCardEnter .8s ease both;
+}
+
+.tv-login-lock {
+    display: grid;
+    width: 58px;
+    height: 58px;
+    place-items: center;
+    margin: 0 auto 21px;
+    border: 1px solid rgba(56,189,248,.25);
+    border-radius: 18px;
+    background: rgba(56,189,248,.08);
+    color: var(--login-blue);
+    animation: tvLoginLockPulse 3s ease-in-out infinite;
+}
+
+.tv-login-lock svg {
+    width: 29px;
+    height: 29px;
+}
+
+.tv-login-card h2 {
+    margin: 0;
+    color: var(--login-text);
+    font-size: 25px;
+    font-weight: 800;
+    letter-spacing: -.8px;
+    text-align: center;
+}
+
+.tv-login-card-subtitle {
+    margin: 10px 0 28px;
+    color: var(--login-muted);
+    font-size: 12px;
+    line-height: 1.7;
+    text-align: center;
+}
+
+.tv-login-message {
+    margin-bottom: 16px;
+    padding: 12px 13px;
+    border: 1px solid rgba(248,113,113,.3);
+    border-radius: 10px;
+    background: rgba(127,29,29,.2);
+    color: #fecaca;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.tv-login-field {
+    margin-bottom: 19px;
+}
+
+.tv-login-field label {
+    display: block;
+    margin-bottom: 9px;
+    color: #e2e8f0;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.tv-login-input-wrap {
+    position: relative;
+}
+
+.tv-login-input-icon {
+    position: absolute;
+    top: 50%;
+    left: 14px;
+    width: 18px;
+    height: 18px;
+    transform: translateY(-50%);
+    color: #64748b;
+    pointer-events: none;
+}
+
+.tv-login-input-wrap input {
+    width: 100%;
+    height: 49px;
+    padding: 0 44px;
+    border: 1px solid #29354a;
+    border-radius: 11px;
+    outline: none;
+    background: rgba(8,13,27,.72);
+    color: #f8fafc;
+    font: inherit;
+    font-size: 13px;
+    transition: border-color .25s,box-shadow .25s;
+}
+
+.tv-login-input-wrap input::placeholder {
+    color: #64748b;
+}
+
+.tv-login-input-wrap input:focus {
+    border-color: var(--login-blue);
+    box-shadow: 0 0 0 3px rgba(56,189,248,.1);
+}
+
+.tv-login-password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 13px;
+    padding: 4px;
+    transform: translateY(-50%);
+    border: 0;
+    background: transparent;
+    color: #94a3b8;
+    cursor: pointer;
+}
+
+.tv-login-password-toggle svg {
+    display: block;
+    width: 18px;
+    height: 18px;
+}
+
+.tv-login-password-toggle:hover {
+    color: var(--login-blue);
+}
+
+.tv-login-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 3px 0 23px;
+    font-size: 11px;
+}
+
+.tv-login-remember {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--login-muted);
+    cursor: pointer;
+}
+
+.tv-login-remember input {
+    accent-color: var(--login-blue);
+}
+
+.tv-login-text-link {
+    color: #7dd3fc;
+    text-decoration: none;
+}
+
+.tv-login-text-link:hover {
+    color: #bae6fd;
+    text-decoration: underline;
+}
+
+.tv-login-submit {
+    display: flex;
+    width: 100%;
+    min-height: 49px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: 0;
+    border-radius: 11px;
+    background: linear-gradient(100deg,#0284c7,#4f46e5);
+    box-shadow: 0 8px 25px rgba(37,99,235,.22);
+    color: #fff;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform .2s,box-shadow .2s;
+}
+
+.tv-login-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(37,99,235,.35);
+}
+
+.tv-login-submit:active {
+    transform: translateY(0);
+}
+
+.tv-login-submit svg {
+    width: 17px;
+    height: 17px;
+}
+
+.tv-login-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 24px 0;
+    color: #64748b;
+    font-size: 10px;
+}
+
+.tv-login-divider::before,
+.tv-login-divider::after {
+    height: 1px;
+    flex: 1;
+    background: var(--login-border);
+    content: "";
+}
+
+.tv-login-register {
+    margin: 0;
+    color: var(--login-muted);
+    font-size: 12px;
+    text-align: center;
+}
+
+.tv-login-register a {
+    font-weight: 700;
+}
+
+.tv-login-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--login-border);
+    color: #64748b;
+    font-size: 10px;
+}
+
+.tv-login-footer svg {
+    width: 14px;
+    height: 14px;
+    color: #34d399;
+}
+
+.tv-login-previous {
+    position: absolute;
+    z-index: 2;
+    top: 20px;
+    left: 24px;
+    color: #94a3b8;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.tv-login-previous:hover {
+    color: var(--login-blue);
+}
+
+.tv-login-page :focus-visible {
+    outline: 2px solid #7dd3fc;
+    outline-offset: 3px;
+}
+
+@keyframes tvLoginGlow {
+    from { transform: translate(0,0) scale(1); }
+    to { transform: translate(45px,30px) scale(1.15); }
+}
+
+@keyframes tvLoginLockPulse {
+    0%,100% { box-shadow: 0 0 0 rgba(56,189,248,0); }
+    50% { box-shadow: 0 0 30px rgba(56,189,248,.15); }
+}
+
+@keyframes tvLoginFadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes tvLoginCardEnter {
+    from { opacity: 0; transform: translateY(20px) scale(.985); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 850px) {
+    .tv-login-layout {
+        grid-template-columns: 1fr;
+        gap: 25px;
+        max-width: 440px;
+    }
+
+    .tv-login-brand {
+        padding: 0;
+        text-align: center;
+    }
+
+    .tv-login-brand-lockup {
+        justify-content: center;
+        margin-bottom: 30px;
+    }
+
+    .tv-login-brand h1 {
+        font-size: 35px;
+        letter-spacing: -1.5px;
+    }
+
+    .tv-login-description,
+    .tv-login-features {
+        display: none;
+    }
+
+    .tv-login-eyebrow {
+        margin-bottom: 14px;
+    }
+
+    .tv-login-card {
+        padding: 30px 24px;
+    }
+}
+
+@media (max-width: 380px) {
+    .tv-login-page {
+        padding: 55px 18px 24px;
+    }
+
+    .tv-login-card {
+        padding: 26px 19px;
+    }
+
+    .tv-login-options {
+        font-size: 10px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tv-login-page *,
+    .tv-login-page *::before,
+    .tv-login-page *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+    }
+}

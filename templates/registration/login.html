@@ -4,56 +4,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign in · TrustVault</title>
+    <meta name="theme-color" content="#080d1b">
+    <title>TrustVault | Secure Login</title>
     <link rel="stylesheet" href="{% static 'css/trustvault.css' %}">
+    <link rel="stylesheet" href="{% static 'css/trustvault-login.css' %}">
 </head>
-<body class="tv-auth-body">
-    <main class="tv-auth-wrap">
-        <a class="tv-auth-home-link tv-previous-link" href="{% url 'home' %}" data-previous-button aria-label="Previous page">← Previous</a>
-        <div class="tv-auth-brand">
-            <div class="tv-mark" aria-hidden="true">♢</div>
-            <h1>Trust<span>Vault</span></h1>
-            <p>Your files. Your control. Your trust.</p>
-        </div>
-        <section class="tv-auth-card" aria-labelledby="login-title">
+<body class="tv-login-page">
+    <a class="tv-login-previous tv-previous-link" href="{% url 'home' %}" data-previous-button>← Previous</a>
+    <div class="tv-login-glow tv-login-glow-one" aria-hidden="true"></div>
+    <div class="tv-login-glow tv-login-glow-two" aria-hidden="true"></div>
+    <div class="tv-login-grid" aria-hidden="true"></div>
+
+    <main class="tv-login-layout">
+        <section class="tv-login-brand" aria-label="TrustVault">
+            <a class="tv-login-brand-lockup" href="{% url 'home' %}" aria-label="TrustVault home">
+                <span class="tv-login-brand-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="4" y="10" width="16" height="11" rx="3"/>
+                        <path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/>
+                    </svg>
+                </span>
+                <span class="tv-login-brand-name">Trust<span>Vault</span></span>
+            </a>
+
+            <div class="tv-login-eyebrow"><span></span> Your secure workspace</div>
+            <h1>Your files.<span>Your control.</span></h1>
+            <p class="tv-login-description">
+                A smarter way to manage, protect, and share your important documents.
+                Keep control of who can access your files, wherever your work takes you.
+            </p>
+
+            <ul class="tv-login-features">
+                <li>
+                    <span class="tv-login-feature-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="4" y="10" width="16" height="11" rx="3"/>
+                            <path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+                        </svg>
+                    </span>
+                    Protected document access
+                </li>
+                <li>
+                    <span class="tv-login-feature-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="9"/>
+                            <path d="M12 7v5l3 2"/>
+                        </svg>
+                    </span>
+                    Document activity and audit history
+                </li>
+                <li>
+                    <span class="tv-login-feature-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/>
+                            <path d="m9 12 2 2 4-4"/>
+                        </svg>
+                    </span>
+                    Permission-based sharing
+                </li>
+            </ul>
+        </section>
+
+        <section class="tv-login-card" aria-labelledby="login-title">
+            <div class="tv-login-lock" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="4" y="10" width="16" height="11" rx="3"/>
+                    <path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/>
+                </svg>
+            </div>
             <h2 id="login-title">Welcome back</h2>
-            <p class="tv-subtitle">Sign in to securely access your documents.</p>
+            <p class="tv-login-card-subtitle">Sign in to access your secure workspace.</p>
 
             {% if messages %}
-                {% for message in messages %}<div class="tv-success" role="status">{{ message }}</div>{% endfor %}
+                {% for message in messages %}
+                    <div class="tv-login-message" role="status">{{ message }}</div>
+                {% endfor %}
             {% endif %}
-            {% if form.errors %}<div class="tv-error" role="alert">Username or password is incorrect. Please try again.</div>{% endif %}
-            {% if next and user.is_authenticated %}<div class="tv-error" role="alert">Your account cannot access that page.</div>{% endif %}
+            {% if form.errors %}
+                <div class="tv-login-message" role="alert">Your username or password is incorrect. Please try again.</div>
+            {% endif %}
+            {% if next and user.is_authenticated %}
+                <div class="tv-login-message" role="alert">Your account cannot access that page.</div>
+            {% endif %}
 
             <form method="post" action="{% url 'login' %}">
                 {% csrf_token %}
                 <input type="hidden" name="next" value="{{ next|default:'' }}">
-                <div class="tv-field">
+                <div class="tv-login-field">
                     <label for="id_username">Username</label>
-                    <input id="id_username" name="username" autocomplete="username" required autofocus value="{{ form.username.value|default:'' }}">
+                    <div class="tv-login-input-wrap">
+                        <svg class="tv-login-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="12" cy="8" r="4"/>
+                            <path d="M5 21v-2a7 7 0 0 1 14 0v2"/>
+                        </svg>
+                        <input type="text" name="username" id="id_username" placeholder="Enter your username" autocomplete="username" required autofocus value="{{ form.username.value|default:'' }}">
+                    </div>
                 </div>
-                <div class="tv-field">
+
+                <div class="tv-login-field">
                     <label for="id_password">Password</label>
-                    <input id="id_password" type="password" name="password" autocomplete="current-password" required>
-                    <button class="tv-toggle" type="button" data-toggle-password="id_password" aria-controls="id_password">Show password</button>
+                    <div class="tv-login-input-wrap">
+                        <svg class="tv-login-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <rect x="4" y="10" width="16" height="11" rx="3"/>
+                            <path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+                        </svg>
+                        <input type="password" name="password" id="id_password" placeholder="Enter your password" autocomplete="current-password" required>
+                        <button type="button" class="tv-login-password-toggle" id="togglePassword" aria-label="Show password" aria-pressed="false">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-                <button class="tv-btn tv-btn-primary" type="submit">Secure sign in <span aria-hidden="true">→</span></button>
+
+                <div class="tv-login-options">
+                    <label class="tv-login-remember">
+                        <input type="checkbox" name="remember_me" value="1">
+                        Remember me
+                    </label>
+                    <a class="tv-login-text-link" href="{% url 'password_reset' %}">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="tv-login-submit">
+                    <span>Sign in securely</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M5 12h14"/>
+                        <path d="m12 5 7 7-7 7"/>
+                    </svg>
+                </button>
             </form>
 
-            <div class="tv-divider"></div>
-            <div class="tv-auth-foot">New to TrustVault? <a href="{% url 'register' %}">Create an account</a></div>
-            <div class="tv-auth-foot"><a href="{% url 'home' %}">← Back to home</a></div>
+            <div class="tv-login-divider">NEW TO TRUSTVAULT?</div>
+            <p class="tv-login-register">
+                Don’t have an account?
+                <a class="tv-login-text-link" href="{% url 'register' %}">Create account</a>
+            </p>
+            <div class="tv-login-footer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/>
+                    <path d="m9 12 2 2 4-4"/>
+                </svg>
+                Secure access · TrustVault
+            </div>
         </section>
     </main>
+
     <script src="{% static 'js/trustvault.js' %}"></script>
     <script>
-        document.querySelectorAll("[data-toggle-password]").forEach((button) => {
-            button.addEventListener("click", () => {
-                const input = document.getElementById(button.dataset.togglePassword);
-                if (!input) return;
-                input.type = input.type === "password" ? "text" : "password";
-                button.textContent = input.type === "password" ? "Show password" : "Hide password";
-            });
+        const passwordInput = document.getElementById("id_password");
+        const toggleButton = document.getElementById("togglePassword");
+
+        toggleButton.addEventListener("click", () => {
+            const showing = passwordInput.type === "password";
+            passwordInput.type = showing ? "text" : "password";
+            toggleButton.setAttribute("aria-pressed", String(showing));
+            toggleButton.setAttribute("aria-label", showing ? "Hide password" : "Show password");
         });
     </script>
 </body>
