@@ -9,14 +9,13 @@
 </head>
 <body class="tv-auth-body">
     <main class="tv-auth-wrap">
-        <a class="tv-auth-home-link" href="{% url 'home' %}" aria-label="Back to TrustVault home">← Home</a>
+        <a class="tv-auth-home-link tv-previous-link" href="{% url 'home' %}" data-previous-button aria-label="Previous page">← Previous</a>
         <div class="tv-auth-brand">
-            <div class="tv-mark" aria-hidden="true">T</div>
+            <div class="tv-mark" aria-hidden="true">♢</div>
             <h1>Trust<span>Vault</span></h1>
             <p>Your files. Your control. Your trust.</p>
         </div>
         <section class="tv-auth-card" aria-labelledby="login-title">
-            <div class="tv-auth-card-kicker"><span aria-hidden="true"></span> PRIVATE DOCUMENT WORKSPACE</div>
             <h2 id="login-title">Welcome back</h2>
             <p class="tv-subtitle">Sign in to securely access your documents.</p>
 
@@ -43,9 +42,10 @@
 
             <div class="tv-divider"></div>
             <div class="tv-auth-foot">New to TrustVault? <a href="{% url 'register' %}">Create an account</a></div>
+            <div class="tv-auth-foot"><a href="{% url 'home' %}">← Back to home</a></div>
         </section>
-        <p class="tv-auth-privacy"><span aria-hidden="true">✓</span> Your documents remain private until you choose to share them.</p>
     </main>
+    <script src="{% static 'js/trustvault.js' %}"></script>
     <script>
         document.querySelectorAll("[data-toggle-password]").forEach((button) => {
             button.addEventListener("click", () => {

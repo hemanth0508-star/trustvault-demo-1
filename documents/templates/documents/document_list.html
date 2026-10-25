@@ -13,6 +13,7 @@
             <span><strong>TrustVault</strong><small>SECURE DOCUMENT WORKSPACE</small></span>
         </a>
         <nav class="tv-workspace-nav" aria-label="Account navigation">
+            <a class="tv-nav-link tv-previous-link" href="{% url 'home' %}" data-previous-button>← Previous</a>
             <span class="tv-workspace-greeting">Welcome, <strong>{{ user.username }}</strong></span>
             {% if user.is_staff %}
                 <a class="tv-nav-link" href="{% url 'audit_dashboard' %}">Audit activity</a>
@@ -193,5 +194,6 @@
     </main>
 
     <footer class="tv-workspace-footer">TrustVault <span aria-hidden="true">·</span> Secure document sharing</footer>
+    <script src="{% static 'js/trustvault.js' %}"></script>
 </body>
 </html>

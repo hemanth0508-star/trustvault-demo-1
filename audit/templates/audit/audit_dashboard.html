@@ -13,6 +13,7 @@
             <span><strong>TrustVault</strong><small>SECURE DOCUMENT WORKSPACE</small></span>
         </a>
         <nav class="tv-workspace-nav" aria-label="Account navigation">
+            <a class="tv-nav-link tv-previous-link" href="{% url 'document_list' %}" data-previous-button>← Previous</a>
             <a class="tv-nav-link" href="{% url 'document_list' %}">My documents</a>
             <a class="tv-nav-logout" href="{% url 'logout' %}">Log out</a>
         </nav>
@@ -21,9 +22,9 @@
     <main class="tv-audit-main">
         <section class="tv-audit-hero">
             <div>
-                <p class="tv-workspace-eyebrow">SECURITY &amp; COMPLIANCE</p>
-                <h1>Audit activity</h1>
-                <p>Review recent document events and access outcomes across TrustVault.</p>
+                <p class="tv-workspace-eyebrow">SECURITY CENTER <span aria-hidden="true">·</span> EVENT HISTORY</p>
+                <h1>Activity &amp; access history</h1>
+                <p>Trace recent document actions and review whether each access attempt succeeded.</p>
             </div>
             <div class="tv-audit-status"><span aria-hidden="true"></span> AUDIT LOG ACTIVE</div>
         </section>
@@ -31,11 +32,11 @@
         <section class="tv-audit-summary" aria-label="Audit log summary">
             <div class="tv-audit-summary-item">
                 <span class="tv-audit-summary-icon" aria-hidden="true">◷</span>
-                <div><strong>Recent activity</strong><span>Latest events first</span></div>
+                <div><strong>Activity feed</strong><span>Latest events appear first</span></div>
             </div>
             <div class="tv-audit-summary-item">
                 <span class="tv-audit-summary-icon tv-audit-summary-icon-green" aria-hidden="true">✓</span>
-                <div><strong>Append-only records</strong><span>Events are recorded for review</span></div>
+                <div><strong>Recorded events</strong><span>Records are available for review</span></div>
             </div>
             <div class="tv-audit-summary-count"><strong>{{ events|length }}</strong><span>events shown · max 200</span></div>
         </section>
@@ -121,5 +122,6 @@
         </section>
     </main>
     <footer class="tv-workspace-footer">TrustVault <span aria-hidden="true">·</span> Security audit dashboard</footer>
+    <script src="{% static 'js/trustvault.js' %}"></script>
 </body>
 </html>

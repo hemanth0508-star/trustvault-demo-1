@@ -9,7 +9,7 @@
 </head>
 <body class="tv-auth-body">
     <main class="tv-auth-wrap tv-register-wrap">
-        <a class="tv-auth-home-link" href="{% url 'home' %}" aria-label="Back to TrustVault home">← Home</a>
+        <a class="tv-auth-home-link tv-previous-link" href="{% url 'home' %}" data-previous-button aria-label="Previous page">← Previous</a>
         <div class="tv-auth-brand">
             <div class="tv-mark" aria-hidden="true">T</div>
             <h1>Trust<span>Vault</span></h1>
@@ -42,6 +42,7 @@
         </section>
         <p class="tv-auth-privacy"><span aria-hidden="true">✓</span> Your documents remain private until you choose to share them.</p>
     </main>
+    <script src="{% static 'js/trustvault.js' %}"></script>
     <script>
         document.querySelectorAll("input").forEach((input) => {
             if (input.type === "text" && input.name === "username") input.autocomplete = "username";

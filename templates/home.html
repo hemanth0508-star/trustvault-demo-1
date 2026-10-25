@@ -15,6 +15,7 @@
             <span>TrustVault</span>
         </a>
         <nav class="tv-home-nav" aria-label="Main navigation">
+            <a class="tv-previous-link" href="{% url 'login' %}" data-previous-button>← Previous</a>
             <a href="#features">Features</a>
             <a href="#security">Security</a>
             <a href="#about">About</a>
@@ -96,5 +97,6 @@
         <a href="{% url 'login' %}">Sign in</a>
         <span>© 2026 TrustVault</span>
     </footer>
+    <script src="{% static 'js/trustvault.js' %}"></script>
 </body>
 </html>

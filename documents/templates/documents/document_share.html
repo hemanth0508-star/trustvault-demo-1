@@ -18,7 +18,7 @@
         </nav>
     </header>
     <main class="tv-form-main">
-        <a class="tv-form-back" href="{% url 'document_list' %}"><span aria-hidden="true">←</span> Back to documents</a>
+        <a class="tv-form-back tv-previous-link" href="{% url 'document_list' %}" data-previous-button><span aria-hidden="true">←</span> Previous</a>
         <section class="tv-form-hero">
             <p class="tv-workspace-eyebrow">DOCUMENT LIBRARY <span aria-hidden="true">·</span> SHARING</p>
             <h1>Share a document</h1>
@@ -61,5 +61,6 @@
         </div>
     </main>
     <footer class="tv-workspace-footer">TrustVault <span aria-hidden="true">·</span> Secure document sharing</footer>
+    <script src="{% static 'js/trustvault.js' %}"></script>
 </body>
 </html>

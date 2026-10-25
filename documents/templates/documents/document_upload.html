@@ -12,21 +12,21 @@
             <span class="tv-upload-brand-mark" aria-hidden="true">T</span>
             <span>TrustVault</span>
         </a>
-        <a class="tv-upload-back" href="{% url 'document_list' %}">
-            <span aria-hidden="true">&larr;</span> Back to documents
+        <a class="tv-upload-back tv-previous-link" href="{% url 'document_list' %}" data-previous-button>
+            <span aria-hidden="true">&larr;</span> Previous
         </a>
     </header>
 
     <main class="tv-upload-main">
         <div class="tv-upload-heading">
             <div>
-                <p class="tv-upload-eyebrow">DOCUMENT LIBRARY <span></span> NEW UPLOAD</p>
-                <h1>Securely upload a document</h1>
-                <p class="tv-upload-intro">Add a file to your vault and keep important information organized in one place.</p>
+                <p class="tv-upload-eyebrow">YOUR VAULT <span></span> ADD A DOCUMENT</p>
+                <h1>Bring a file into your vault</h1>
+                <p class="tv-upload-intro">Add the details, choose a file, and keep it private until you decide to share it.</p>
                 <ol class="tv-upload-steps" aria-label="Upload steps">
-                    <li class="is-current"><span>01</span> Details</li>
-                    <li><span>02</span> File</li>
-                    <li><span>03</span> Private vault</li>
+                    <li class="is-current"><span>01</span> Add details</li>
+                    <li><span>02</span> Choose file</li>
+                    <li><span>03</span> Keep it private</li>
                 </ol>
             </div>
             <div class="tv-upload-status"><span></span> PRIVATE BY DEFAULT</div>
@@ -41,8 +41,8 @@
                         </svg>
                     </div>
                     <div>
-                        <h2 id="upload-form-title">Document details</h2>
-                        <p>Tell us a little about this file.</p>
+                        <h2 id="upload-form-title">Set up your document</h2>
+                        <p>Give your file a name and a place in your library.</p>
                     </div>
                 </div>
 
@@ -174,5 +174,6 @@
             showFile(input.files[0]);
         })();
     </script>
+    <script src="{% static 'js/trustvault.js' %}"></script>
 </body>
 </html>
